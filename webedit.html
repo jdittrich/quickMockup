@@ -1,6 +1,10 @@
 <!--
-TODO: löschen via entf, via nutzung  
+TODO:
+* editieren to jquery UI Plungin oder:
+* Change canvas size
+
 DONE: 
+* löschen
 * Rudmentäres Editieren
 * Drag/Drop schachteln
 * Drag Drop
@@ -73,7 +77,53 @@ DONE:
 				list-style-type: none;
 			}
 
+			#toolbar{
+				position:fixed;
+				top:0;
+				right:0;
+			}
+
+			#toolbar button{
+				display: inline-block;
+				opacity: 0.5;
+				z-index: 9999;
+			}
+
+			#toolbar:hover button{
+				opacity: 1;
+			}
+
+			.custom-selected{
+
+			}
+
+			.ui-resizable>.ui-resizable-handle{
+				pointer-events: none;
+				background: rgba(0,0,0,0.0);
+			}
+
+			.custom-selected.ui-resizable>.ui-resizable-handle{
+				pointer-events: auto;
+				background: rgba(0,0,0,0.5);
+			}
+
+
+
+
+			/*JQUERY UI Modifacations, makes handles inkscape-style*/
 			.ui-selected { background: #F39814; color: white; }
+
+
+			.ui-resizable-handle{width:8px !important; height: 8px !important;} /*all handles*/
+
+			.ui-resizable-n{left: calc(50% - 4px); top:-5px}
+			.ui-resizable-e{right:-5px; top:calc(50% - 4px)}
+			.ui-resizable-s{left:calc(50% - 4px); bottom:-5px}
+			.ui-resizable-w{left:-5px; top:calc(50% - 4px)}
+			.ui-resizable-ne{right:-5px;top:-5px}
+			.ui-resizable-se{right:-5px;bottom: -5px;}
+			.ui-resizable-sw{left:-5px; bottom:-5px;}
+			.ui-resizable-nw{left:-5px; top:-5px;}
 		</style>
 </head>
 
@@ -86,16 +136,15 @@ DONE:
 		</li>
 		<li>
 			<div class="newMockElement" style="border-top:white 1px solid; border-right:2px gray solid; border-bottom:2px gray solid; border-left:1px solid white; background:#AAA; text-align:center">
-				<span class="editableArea">ok</span>
+				<span class="editableArea" data-markdown-content="OK">OK</span>
 			</div>
 		</li>
 		<li>
 			<div class="newMockElement" style="border:1px solid #AAA; width: 400px; height:200px;">
 				<div style="background:blue;height:2em; width:100%">
-					<span class="editableArea" style="float:left">Titel</span>
+					<span class="editableArea" style="float:left" >Titel</span>
 					<span style="border:1px solid gray; background red; float:right;">X</span>
 				</div>
-
 			</div>
 		</li>
 		<li>
@@ -145,6 +194,7 @@ DONE:
 	</ul>
 	<div id="container">
 
+	<div id="toolbar"><button class="delete-element-button">delete Element</button></div>
 	</div>
 <script>
 $(function(){
@@ -155,10 +205,13 @@ $(function(){
 			disabled:false,
 			revert:"invalid",
 			zIndex: 999
-		}).resizable();
+		}).resizable({
+			handles:"all"
+		});
 
 		makeDropableElement(element);
-		makeEditableElement(element)
+		makeEditableElement(element);
+		makeSelectableElement(element);
 	}
 
 
@@ -196,7 +249,37 @@ $(function(){
 		});//droppable End
 	}//droppableWrapper End
 
+	var makeSelectableElement = function(element,selectorCanvasParam){
+		var $element = $(element);
 
+		var selectorCanvas = selectorCanvasParam ? selectorCanvasParam : "body"; //if selectorCanvas is defined, set it to a standard value
+
+		var selectedClassParam = "custom-selected";
+		var elementSelector = ".mockElement"
+
+		var $canvas = $(selectorCanvas);
+
+		$element.mousedown(function(event){
+
+
+			if($(event.target).closest(elementSelector)[0] === $element[0]){ //either it is the same element that was clicked, or the element is the clicked element’s the first parent that is a mock element.
+
+			// ist das Element das nächste parent element voḿ geklickten element aus: select.
+			// wenn nicht... dann nix.
+				$canvas.find("." + selectedClassParam).removeClass(selectedClassParam);
+
+				$element.addClass(selectedClassParam); /*custom selected, since there is a jQuery UI selected, that might be used later*/
+			}
+		});
+	}
+
+	var deleteElement = function(){
+		var canvasSelector = "body";
+		var element2BDeletedSelector = ".custom-selected";
+		$canvas = $(canvasSelector);
+
+		$canvas.find(element2BDeletedSelector).remove();
+	}
 
 	var makeEditableElement = function(element){
 		var converter = new showdown.Converter();
@@ -206,17 +289,15 @@ $(function(){
 		
 		$element.dblclick(function(event){
 			event.stopPropagation();//otherwise all parent elements go to edit too.
-			console.log("!", event.currentTarget,"|", event.target, "|",this);
 			if($element.hasClass("isEditing")){
 				leaveEditMode();
 			} else {
-				gotToEditMode();
+				goToEditMode();
 			}
 		});
+
 		
-		console.log("dclicked!");
-		
-		var gotToEditMode = function(){
+		var goToEditMode = function(){
 			var markdown = $element.attr("data-markdown-content");
 
 
@@ -248,6 +329,8 @@ $(function(){
 		}
 		
 	};
+
+	$("#toolbar .delete-element-button").click(deleteElement)
 
 	makeDropableElement("#container");
 	
