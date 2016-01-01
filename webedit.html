@@ -2,8 +2,9 @@
 TODO:
 * editieren to jquery UI Plungin oder:
 * Change canvas size
+* set up simple, universal markup that helps to style tables etc. via markdown
 
-DONE: 
+DONE:
 * löschen
 * Rudmentäres Editieren
 * Drag/Drop schachteln
@@ -25,16 +26,29 @@ DONE:
 		<script src="jquery.js"></script>
 		<script src="jquery-ui.js"></script>
 		<script src="showdown.js"></script>
+		<script src="showdownUIExtensions.js"></script>
+		<script src="mousetrap.js"></script>
+
+		<script src="jqUiEditMD2HTML.js"></script>
+
+
 		<link href="jquery-ui.css" rel="stylesheet">
 
+
 		<style>
+				body{
+			padding:0;
+			margin:0;
+
+		}
+
 		.mockElement {
 
 			width: 50px;
 			height: 50px;
 			position: absolute;
 		}
-			
+
 		.editableArea>p{
 			margin: 0 0 0 0;
 			padding: 0 0 0 0;
@@ -70,11 +84,13 @@ DONE:
 				padding:0;
 				margin:0;
 				overflow-y: scroll;
-				overflow-x: visible;
+				overflow-x: hidden;
 			}
 
-			#widgetCollection li{
+			#widgetCollection>li{
 				list-style-type: none;
+				padding: 0.5em;
+				border-bottom:1px solid silver
 			}
 
 			#toolbar{
@@ -110,6 +126,8 @@ DONE:
 
 
 
+
+
 			/*JQUERY UI Modifacations, makes handles inkscape-style*/
 			.ui-selected { background: #F39814; color: white; }
 
@@ -125,61 +143,230 @@ DONE:
 			.ui-resizable-sw{left:-5px; bottom:-5px;}
 			.ui-resizable-nw{left:-5px; top:-5px;}
 		</style>
+
+		<!--elements -->
+		<style>
+			/*all*/
+			.newMockElement, .mockElement{
+				box-sizing: border-box;
+				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+			}
+			.newMockElement > div:editableArea, .mockElement > div.editableArea{
+				width: 100%;
+				box-sizing: border-box;
+			}
+			/*buttons*/
+			.newMockElement.button, .mockElement.button{
+				justify-content: center;
+				align-items: center;
+				display: flex;
+			}
+
+			/*Window*/
+
+
+			/*tabs*/
+			.newMockElement.tabs, .mockElement.tabs{
+				background: rgba(0,0,0,0);
+				width:30em;
+			}
+
+			.newMockElement.tabs .editableArea, .mockElement.tabs .editableArea{
+				border-bottom: 2px solid gray;
+				background: rgba(0,0,0,0);
+				box-sizing: border-box;
+				width:100%;
+				margin:0;
+			}
+
+			.newMockElement.tabs .editableArea ul, .mockElement.tabs .editableArea ul{
+				box-sizing: border-box;
+				width:100%;
+				margin:0;
+				padding:0;
+
+			}
+
+			.newMockElement.tabs ul li, .mockElement.tabs ul li{
+				display: inline-block;
+				padding: 5px 16px;
+				margin: 0px;
+				border: 1px solid gray;
+				border-top-left-radius: 3px;
+				border-top-right-radius: 3px;
+				margin-bottom: -2px;
+				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				position: relative;
+			}
+
+
+			/*menu*/
+
+			/*headline*/
+
+			/*table*/
+			.newMockElement.table, .mockElement.table{
+				width:10em;
+			}
+			.newMockElement.table table, .mockElement.table table{
+				width: 100%;
+				border-collapse: collapse;
+			}
+			.newMockElement.table table td, .mockElement.table table td, .newMockElement.table table th, .mockElement.table table th{
+				border: 1px solid gray;
+			}
+
+			.newMockElement.table table th, .mockElement.table table th{
+				border-bottom: 2px solid black;
+			}
+
+			/*just a rectangle*/
+			.newMockElement.rect , .mockElement.rect{
+				border:2px solid #333;
+				width:200px;
+				height:200px;
+			}
+
+			/*optionlist*/
+			.newMockElement.optionRadiobutton , .mockElement.optionRadiobutton{
+				box-sizing: border-box;
+			}
+
+			.newMockElement.optionRadiobutton .editableArea, .mockElement.optionlist .editableArea{
+				box-sizing: border-box;
+				width:100%;
+			}
+
+			.newMockElement.optionRadiobutton .editableArea em:before, .mockElement.optionRadiobutton .editableArea em:before{
+				content:"○ ";
+				font-size:1em;
+			}
+
+			.newMockElement.optionRadiobutton .editableArea strong:before, .mockElement.optionRadiobutton .editableArea strong:before{
+				content:"◉ ";
+				font-size:1em;
+			}
+
+			.newMockElement.optionCheckbox .editableArea em:before, .mockElement.optionCheckbox .editableArea em:before{
+				content:"☐ ";
+				font-size:1em;
+			}
+
+			.newMockElement.optionCheckbox .editableArea strong:before, .mockElement.optionCheckbox .editableArea strong:before{
+				content:"☒ ";
+				font-size:1em;
+			}
+	</style>
 </head>
 
 <body>
 	<ul id="widgetCollection">
 		<li>
-			<div class="newMockElement">
-				NEW!
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement" style="border-top:white 1px solid; border-right:2px gray solid; border-bottom:2px gray solid; border-left:1px solid white; background:#AAA; text-align:center">
+			<div class="newMockElement" style="
+				justify-content: center;
+				align-items: center;
+				display: flex;
+				border:2px solid #333;
+				border-radius:3px;
+				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				background-white;
+				width: 8em;
+				height:3em;
+				">
 				<span class="editableArea" data-markdown-content="OK">OK</span>
 			</div>
 		</li>
-		<li>
-			<div class="newMockElement" style="border:1px solid #AAA; width: 400px; height:200px;">
-				<div style="background:blue;height:2em; width:100%">
-					<span class="editableArea" style="float:left" >Titel</span>
-					<span style="border:1px solid gray; background red; float:right;">X</span>
+		<li><!-- Dialog Window -->
+			<div class="newMockElement dialogWindow" data-markdown-content="myWindow"
+			style="
+				border:2px solid gray;
+				border-radius:3px;
+				width: 400px;
+				height:200px;
+				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				">
+				<div style="
+					background-color:silver;
+					border-bottom: 2px solid #333;
+					border-radius: 3px;
+					padding:7px;
+					height:1.6em;
+				">
+					<span class="editableArea" style="float:left; padding:4px;" >Titel</span>
+					<span style="padding:4px; font-size:1.5em; margin-top: -0.4em; float:right;">×</span>
+				</div>
+			</div>
+		</li>
+		<li><!-- Tabs -->
+			<div class="newMockElement tabs" data-markdown-content="
+* Tab1
+* Tab2
+			">
+				<div class="editableArea" >
+					<ul>
+						<li>Tab1</li>
+						<li>Tab2</li>
+					</ul>
+
 				</div>
 			</div>
 		</li>
 		<li>
-			<div class="newMockElement">
-				<p>
-					Lorem <br> Ipsum <br> dolor
+			<div class="newMockElement" data-markdown-content="headline1">
+				<h1 class="editableArea">Headline1</h1>
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement" data-markdown-content="
+Testparagraphy. Look, a
+
+* List
+* List2
+
+(markdown supported!)">
+				<p class="editableArea">
+					Paragraph
 				</p>
 			</div>
 		</li>
 		<li>
-			<div class="newMockElement">
-				<p>
-					Lorem <br> Ipsum <br> dolor
-				</p>
+		<div class="newMockElement table" data-markdown-content="
+| h1    |    h2   |      h3 |
+|:------|:-------:|--------:|
+| 100   | [a][1]  | ![b][2] |
+| *foo* | **bar** | ~~baz~~ |
+			">
+			<div class="editableArea">
+				<table><thead>
+				<tr>
+				<th style="text-align:left;">h1</th>
+				<th style="text-align:center;">h2</th>
+				</tr>
+				</thead>
+
+				<tbody>
+				<tr>
+				<td style="text-align:left;">100</td>
+				<td style="text-align:center;">[a][1]</td>
+				</tr>
+				</tbody></table>
+			</div>
+	</div>
+		</li>
+		<li>
+			<div class="newMockElement rect">
 			</div>
 		</li>
 		<li>
-			<div class="newMockElement">
-				<p>
-					Lorem <br> Ipsum <br> dolor
-				</p>
+			<div class="newMockElement optionCheckbox" data-markdown-content="**radio button**
+*checkbox*
+*other checkbox*">
+				<div class="editableArea"></div>
 			</div>
-		</li>
-		<li>
-			<div class="newMockElement">
-				<p>
-					Lorem <br> Ipsum <br> dolor
-				</p>
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement">
-				<p>
-					Lorem <br> Ipsum <br> dolor
-				</p>
+			<div class="newMockElement optionRadiobutton" data-markdown-content="**radio button**
+*checkbox*
+*other checkbox*">
+				<div class="editableArea"></div>
 			</div>
 		</li>
 		<li>
@@ -199,7 +386,7 @@ DONE:
 <script>
 $(function(){
 	var makeMovableElement = function(element){
-		
+
 		$(element).draggable({
 			distance: 4,
 			disabled:false,
@@ -210,7 +397,7 @@ $(function(){
 		});
 
 		makeDropableElement(element);
-		makeEditableElement(element);
+		element.editText();
 		makeSelectableElement(element);
 	}
 
@@ -224,13 +411,11 @@ $(function(){
 		drop: function( event, ui ) {
 			//calculate offset of both
 			var elementToAppend = null;
-			
+
 			if(ui.draggable.hasClass("newMockElement")){//if this is a new element
 				elementToAppend = ui.draggable.clone(false)
 				elementToAppend.removeClass("newMockElement");
-				
-				//makeMovableElement(elementToAppend);
-				
+
 				elementToAppend.addClass("mockElement")
 				elementToAppend.css("position","absolute");//always has relative otherwise = glitches
 			}else{
@@ -264,7 +449,7 @@ $(function(){
 
 			if($(event.target).closest(elementSelector)[0] === $element[0]){ //either it is the same element that was clicked, or the element is the clicked element’s the first parent that is a mock element.
 
-			// ist das Element das nächste parent element voḿ geklickten element aus: select.
+			// ist das Element das nächste parent element vom geklickten element aus: select.
 			// wenn nicht... dann nix.
 				$canvas.find("." + selectedClassParam).removeClass(selectedClassParam);
 
@@ -281,12 +466,12 @@ $(function(){
 		$canvas.find(element2BDeletedSelector).remove();
 	}
 
-	var makeEditableElement = function(element){
+/*	var makeEditableElement = function(element){
 		var converter = new showdown.Converter();
-		
+
 		var $element = $(element);
 		var $textarea;
-		
+
 		$element.dblclick(function(event){
 			event.stopPropagation();//otherwise all parent elements go to edit too.
 			if($element.hasClass("isEditing")){
@@ -296,7 +481,7 @@ $(function(){
 			}
 		});
 
-		
+
 		var goToEditMode = function(){
 			var markdown = $element.attr("data-markdown-content");
 
@@ -309,14 +494,14 @@ $(function(){
 
 			$element.addClass("isEditing");
 		}
-	
+
 		var leaveEditMode = function(){
 			var markdown = $element.find(".markdowninput").val(); //reads what the user wrote
 			var html = converter.makeHtml(markdown); //convert to html
-			
+
 			//write markdown to data attribute
 			$element.attr("data-markdown-content",markdown);
-			
+
 			//write content
 			$element.
 				find(".editableArea").
@@ -324,20 +509,24 @@ $(function(){
 				html(html);
 
 			$element.removeClass("isEditing");
-			
+
 			$element.find(".markdowninput").remove();
 		}
-		
+
+	};*/
+	var setupGUI = function(){
+		$("#toolbar .delete-element-button").click(deleteElement)
+		Mousetrap.bind('del', function() { deleteElement()});
+
+		makeDropableElement("#container");
 	};
 
-	$("#toolbar .delete-element-button").click(deleteElement)
+	setupGUI();
 
-	makeDropableElement("#container");
-	
 	$(".mockElement").each(function(index, element){
 		makeMovableElement(element);
 	});
-	
+
 	$(".newMockElement").draggable({
 		distance: 4,
 		disabled:false,
