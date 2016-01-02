@@ -1,8 +1,9 @@
 <!--
 TODO:
-* editieren to jquery UI Plungin oder:
-* Change canvas size
-* set up simple, universal markup that helps to style tables etc. via markdown
+* activate/Deactivate markdown parsing for each element type (when markdown, server textarea, otherwise simple input)
+* Meta Elements: Note (shrinkwrapping/scrolling Text), Headline to link to, possibly via an automatic TOC dropdown menu.
+* clear seperation of interactive and non interactive elements. GUI should be hidden in markup but made visible when external javascript is present. Thus: gui Javascript can go to a file.
+Thus: element CSS and essential displaying stuff-css must remain in the file.
 
 DONE:
 * löschen
@@ -10,6 +11,9 @@ DONE:
 * Drag/Drop schachteln
 * Drag Drop
 * Resize
+* set up simple, universal markup that helps to style tables etc. via markdown
+* meaningful positioning of the text-edit element via pos. absolute
+* Change canvas size
 
 
 --->
@@ -124,7 +128,7 @@ DONE:
 			}
 
 
-
+			.dialog{display: none;} /*hide dialog markup*/
 
 
 
@@ -256,6 +260,8 @@ DONE:
 				content:"☒ ";
 				font-size:1em;
 			}
+
+			/*Dropdown*/
 	</style>
 </head>
 
@@ -370,6 +376,11 @@ Testparagraphy. Look, a
 			</div>
 		</li>
 		<li>
+			<div class="newMockElement dropdownList" data-markdown-content="DropdownTitle">
+				<span class="editableArea">Dropdown Title</span><span class="mackelement-dropdown-arrow">▾</span>
+			</div>
+		</li>
+		<li>
 			<div class="newMockElement">
 				<p>
 					Lorem <br> Ipsum <br> dolor
@@ -379,9 +390,22 @@ Testparagraphy. Look, a
 
 
 	</ul>
+
+
 	<div id="container">
 
-	<div id="toolbar"><button class="delete-element-button">delete Element</button></div>
+	</div>
+
+	<div id="toolbar">
+		<button class="delete-element-button">delete Element</button>
+		<button class="change-canvasize-button">change Canvas Size</button>
+	</div>
+
+	<div id="changeCanvasSizeDialog" class="dialog">
+		<p>Change the size of the Canvas</p>
+		<label>Width:<br><input type="text" name="width"></label><br>
+		<label>Height:<br><input type="text" name="height"></label>
+
 	</div>
 <script>
 $(function(){
@@ -395,13 +419,14 @@ $(function(){
 		}).resizable({
 			handles:"all"
 		});
-
-		makeDropableElement(element);
-		element.editText();
-		makeSelectableElement(element);
 	}
 
-
+	var setupElement = function(element){
+		makeMovableElement(element);
+		makeDropableElement(element);
+		$(element).editText();
+		makeSelectableElement(element,"#container");
+	}
 
 	var makeDropableElement= function(element){
 		$(element).droppable({
@@ -429,7 +454,7 @@ $(function(){
 			var newTop = draggableOffset.top -  droppableOffset.top;
 
 			elementToAppend.appendTo($(this)).css({top:newTop+"px", left:newLeft+"px"});
-			makeMovableElement(elementToAppend);
+			setupElement(elementToAppend);
 			}
 		});//droppable End
 	}//droppableWrapper End
@@ -444,9 +469,18 @@ $(function(){
 
 		var $canvas = $(selectorCanvas);
 
+		//deselect if canvas is clicked
+		$canvas.click(function(event){
+			if(event.target=== $canvas[0]){
+				$canvas.find("." + selectedClassParam).removeClass(selectedClassParam);
+			}
+		})
+
+		//select the this element, deselect others
+		$canvas.find("." + selectedClassParam).removeClass(selectedClassParam);
+		$element.addClass(selectedClassParam); /*custom selected, since there is a jQuery UI selected, that might be used later*/
+
 		$element.mousedown(function(event){
-
-
 			if($(event.target).closest(elementSelector)[0] === $element[0]){ //either it is the same element that was clicked, or the element is the clicked element’s the first parent that is a mock element.
 
 			// ist das Element das nächste parent element vom geklickten element aus: select.
@@ -456,6 +490,7 @@ $(function(){
 				$element.addClass(selectedClassParam); /*custom selected, since there is a jQuery UI selected, that might be used later*/
 			}
 		});
+
 	}
 
 	var deleteElement = function(){
@@ -466,65 +501,101 @@ $(function(){
 		$canvas.find(element2BDeletedSelector).remove();
 	}
 
-/*	var makeEditableElement = function(element){
-		var converter = new showdown.Converter();
+	var setupGUI = function(){
+		$("#changeCanvasSizeDialog").dialog({
+			autoOpen:false,
+			open: function( event, ui ) {
+				var $container = $("#container");
 
-		var $element = $(element);
-		var $textarea;
+				var currentHeight = $container.height();
+				var currentWidth = $container.width();
 
-		$element.dblclick(function(event){
-			event.stopPropagation();//otherwise all parent elements go to edit too.
-			if($element.hasClass("isEditing")){
-				leaveEditMode();
-			} else {
-				goToEditMode();
-			}
+				//show current dimensions in the input filds
+				$(this).
+					find('input[name="height"]').
+					val(currentHeight);
+
+				$(this).
+					find('input[name="width"]').
+					val(currentWidth);
+			},
+			buttons: [
+				{
+					text: "OK",
+					click: function() {
+					var $container = $("#container");
+
+					$container.
+						height(
+							$(this).
+							find('input[name="height"]')
+							.val()
+						);
+					$container.
+						width(
+							$(this).
+							find('input[name="width"]').
+							val()
+						);
+					}
+				},
+				{
+					text: "Cancel",
+					click: function() {
+						$(this).dialog( "close" );
+					}
+				}
+			]
 		});
 
+		//setup toolbar
+		///setup toolbar-delete button
+		$("#toolbar .delete-element-button").click(deleteElement); //delete button
+		Mousetrap.bind('del', function() { deleteElement()}); //keyboard shortcut
 
-		var goToEditMode = function(){
-			var markdown = $element.attr("data-markdown-content");
+
+		$("#toolbar .change-canvasize-button").click(function(){
+			$("#changeCanvasSizeDialog").dialog("open");
+		});
+
+		/*
+		//TODO: classnames could be better: toolbar-button button-function
+			var $container = $("#container");
+
+			var currentHeight = $container.height();
+			var currentWidth = $container.width();
+
+			var $resizeDialog = $('<div style="position:fixed; top:10em; left:45vw; width:5vw; height:2vh; background:gray;"><input type="text" name="width"><br><input type="text" name="height"></div>');
+			$resizeDialog.find('input[name="height"]').val(currentHeight);
+			$resizeDialog.find('input[name="width"]').val(currentWidth);
 
 
-			//write to edit window
-			$textarea = $("<textarea>",{
-				class:"markdowninput",
-				text: markdown
-			}).appendTo($element);
+			$button = $("<button>ok</button>");
 
-			$element.addClass("isEditing");
-		}
+			$button.click(function(){
+				$container.height($resizeDialog.find('input[name="height"]').val());
+				$container.width($resizeDialog.find('input[name="width"]').val());
 
-		var leaveEditMode = function(){
-			var markdown = $element.find(".markdowninput").val(); //reads what the user wrote
-			var html = converter.makeHtml(markdown); //convert to html
+				$resizeDialog.remove();
+			});
 
-			//write markdown to data attribute
-			$element.attr("data-markdown-content",markdown);
+			$resizeDialog.append($button);
 
-			//write content
-			$element.
-				find(".editableArea").
-				first(). //saveguard if there are multiple editable Areas
-				html(html);
+			$("body").append($resizeDialog);
+		})
+			*/
 
-			$element.removeClass("isEditing");
 
-			$element.find(".markdowninput").remove();
-		}
 
-	};*/
-	var setupGUI = function(){
-		$("#toolbar .delete-element-button").click(deleteElement)
-		Mousetrap.bind('del', function() { deleteElement()});
-
+		//setup canvas
 		makeDropableElement("#container");
 	};
 
 	setupGUI();
 
 	$(".mockElement").each(function(index, element){
-		makeMovableElement(element);
+		$(element).find(".ui-resizable-handle").remove();//otherwise we get them twice, they are saved with the file and created again when the element is initialized
+		setupElement(element);
 	});
 
 	$(".newMockElement").draggable({
