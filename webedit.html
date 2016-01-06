@@ -1,6 +1,5 @@
 <!--
 TODO:
-* activate/Deactivate markdown parsing for each element type (when markdown, server textarea, otherwise simple input)
 * Meta Elements: Note (shrinkwrapping/scrolling Text), Headline to link to, possibly via an automatic TOC dropdown menu.
 * clear seperation of interactive and non interactive elements. GUI should be hidden in markup but made visible when external javascript is present. Thus: gui Javascript can go to a file.
 Thus: element CSS and essential displaying stuff-css must remain in the file.
@@ -14,6 +13,7 @@ DONE:
 * set up simple, universal markup that helps to style tables etc. via markdown
 * meaningful positioning of the text-edit element via pos. absolute
 * Change canvas size
+* activate/Deactivate markdown parsing for each element type (when markdown, server textarea, otherwise simple input): Simple parsing now activated via editableContent-plaintext to the editableArea
 
 
 --->
@@ -146,6 +146,10 @@ DONE:
 			.ui-resizable-se{right:-5px;bottom: -5px;}
 			.ui-resizable-sw{left:-5px; bottom:-5px;}
 			.ui-resizable-nw{left:-5px; top:-5px;}
+
+			.drop-hover{
+				outline:2px solid rgba(0,0,0,0.3);
+			}
 		</style>
 
 		<!--elements -->
@@ -175,7 +179,7 @@ DONE:
 				width:30em;
 			}
 
-			.newMockElement.tabs .editableArea, .mockElement.tabs .editableArea{
+			.newMockElement.tabs>.editableArea, .mockElement.tabs>.editableArea{
 				border-bottom: 2px solid gray;
 				background: rgba(0,0,0,0);
 				box-sizing: border-box;
@@ -183,7 +187,7 @@ DONE:
 				margin:0;
 			}
 
-			.newMockElement.tabs .editableArea ul, .mockElement.tabs .editableArea ul{
+			.newMockElement.tabs>.editableArea ul, .mockElement.tabs>.editableArea ul{
 				box-sizing: border-box;
 				width:100%;
 				margin:0;
@@ -194,15 +198,16 @@ DONE:
 			.newMockElement.tabs ul li, .mockElement.tabs ul li{
 				display: inline-block;
 				padding: 5px 16px;
-				margin: 0px;
 				border: 1px solid gray;
 				border-top-left-radius: 3px;
 				border-top-right-radius: 3px;
-				margin-bottom: -2px;
+				margin: 0 0 -2px 0.3em;
 				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-				position: relative;
 			}
 
+			.mockElement.tabs ul li.item-highlighted{
+				background: #DDD;
+			}
 
 			/*menu*/
 
@@ -241,32 +246,272 @@ DONE:
 				width:100%;
 			}
 
-			.newMockElement.optionRadiobutton .editableArea em:before, .mockElement.optionRadiobutton .editableArea em:before{
-				content:"○ ";
-				font-size:1em;
-			}
-
-			.newMockElement.optionRadiobutton .editableArea strong:before, .mockElement.optionRadiobutton .editableArea strong:before{
-				content:"◉ ";
-				font-size:1em;
-			}
-
-			.newMockElement.optionCheckbox .editableArea em:before, .mockElement.optionCheckbox .editableArea em:before{
-				content:"☐ ";
-				font-size:1em;
-			}
-
-			.newMockElement.optionCheckbox .editableArea strong:before, .mockElement.optionCheckbox .editableArea strong:before{
-				content:"☒ ";
-				font-size:1em;
-			}
 
 			/*Dropdown*/
+			.dropdownList{
+				border:2px solid gray;
+				border-radius: 3px;
+				padding: 0px 0 0px 0.4em;
+				display: table;
+			}
+
+			.dropdownList .editableArea{
+				display: table-cell;
+				text-align: center;
+				height: 100%;
+				vertical-align: middle;
+			}
+
+			.dropdownList .mockelement-dropdown-arrow{
+				border-left: 1px solid rgb(128, 128, 128);
+				padding: 0px 0.4em;
+				display: table-cell;
+				text-align: center;
+				height: 100%;
+				vertical-align: middle;
+				background: #EEE;
+
+
+			}
+
+			/*loading indicator*/
+			.newMockElement.loadingIndicator,
+			.mockElement.loadingIndicator{
+				border: 1px solid gray;
+				border-radius: 2px;
+				background-color: white;
+				padding: 0;
+				justify-content: center;
+				align-items: center;
+				display: flex;
+				position: relative
+			}
+
+			.newMockElement.loadingIndicator .bar,
+			.mockElement.loadingIndicator .bar{
+				 margin: 0;
+					background-color: rgba(0, 0, 0, 0.21);
+				width: 70%;
+				display: block;
+				position: absolute;
+				height: 100%;
+				top: 0;
+				left: 0;
+				text-align: center;
+			}
+
+			/*entries vertical*/
+			.newMockElement.entries-horizontal, .mockElement.entries-horizontal{
+				background: rgba(0,0,0,0);
+				width:30em;
+			}
+
+			.newMockElement.entries-horizontal .editableArea, .mockElement.entries-horizontal .editableArea{
+				background: rgba(0,0,0,0);
+				box-sizing: border-box;
+				width:100%;
+				height: 100%;
+				margin:0;
+			}
+
+			.newMockElement.entries-horizontal .editableArea ul, .mockElement.entries-horizontal .editableArea ul{
+				box-sizing: border-box;
+				width:100%;
+				height: 100%;
+				margin:0;
+				padding:0;
+				display: table;
+				border-collapse: collapse;
+			}
+
+			.newMockElement.entries-horizontal ul li, .mockElement.entries-horizontal ul li{
+				display: table-cell;
+				padding: 0.2em;
+				border: 1px solid gray;
+				border-collapse: collapse;
+				margin: 0;
+				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				text-align: center;
+				vertical-align: middle;
+			}
+
+			.mockElement.entries-horizontal ul li.item-highlighted{
+				background: #DDD;
+			}
+
+			/*entries horizontal*/
+			.newMockElement.entries-vertical, .mockElement.entries-vertical{
+				background: rgba(0,0,0,0);
+				width:30em;
+			}
+
+			.newMockElement.entries-vertical .editableArea, .mockElement.entries-vertical .editableArea{
+				background: rgba(0,0,0,0);
+				box-sizing: border-box;
+				width:100%;
+				height: 100%;
+				margin:0;
+			}
+
+			.newMockElement.entries-vertical .editableArea ul, .mockElement.entries-vertical .editableArea ul{
+				box-sizing: border-box;
+				width: 100%;
+				height: 100%;
+				margin: 0px;
+				padding: 0px;
+				display: flex;
+				flex-direction: column;
+			}
+
+			.newMockElement.entries-vertical ul li, .mockElement.entries-vertical ul li{
+				margin: 0px;
+				font-family: "Comic Sans MS","Comic Sans",cursive;
+				width: 99%;
+				padding: 0.2em;
+				flex: 1 1 100%;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: center;
+				border: 1px solid rgb(128, 128, 128);
+				border-collapse: collapse;
+				margin-top: -1px;
+			}
+
+			.mockElement.entries-vertical ul li.item-highlighted{
+				background: #DDD;
+			}
+
+
+			/*boxes vertical*/
+			.newMockElement.boxes-horizontal, .mockElement.boxes-horizontal{
+				background: rgba(0,0,0,0);
+				width:30em;
+			}
+
+			.newMockElement.boxes-horizontal .editableArea, .mockElement.boxes-horizontal .editableArea{
+				background: rgba(0,0,0,0);
+				box-sizing: border-box;
+				width:100%;
+				height: 100%;
+				margin:0;
+			}
+
+			.newMockElement.boxes-horizontal .editableArea ul, .mockElement.boxes-horizontal .editableArea ul{
+				box-sizing: border-box;
+				width: 100%;
+				height: 100%;
+				margin: 0px;
+				padding: 0px;
+				display: flex;
+				flex-direction: row;
+			}
+
+			.newMockElement.boxes-horizontal ul li, .mockElement.boxes-horizontal ul li{
+				padding: 0.2em;
+				border: 1px solid rgb(128, 128, 128);
+				font-family: "Comic Sans MS","Comic Sans",cursive;
+				margin: 0.2em;
+				display: flex;
+				flex: 1 1 auto;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.mockElement.boxes-horizontal ul li.item-highlighted{
+				background: #DDD;
+			}
+
+			/*boxes vertical*/
+			.newMockElement.boxes-vertical, .mockElement.boxes-vertical{
+				background: rgba(0,0,0,0);
+				width:30em;
+			}
+
+			.newMockElement.boxes-vertical .editableArea, .mockElement.boxes-vertical .editableArea{
+				background: rgba(0,0,0,0);
+				box-sizing: border-box;
+				width:100%;
+				height: 100%;
+				margin:0;
+			}
+
+			.newMockElement.boxes-vertical .editableArea ul, .mockElement.boxes-vertical .editableArea ul{
+				box-sizing: border-box;
+				width: 100%;
+				height: 100%;
+				margin: 0px;
+				padding: 0px;
+				display: flex;
+				flex-direction: column;
+			}
+
+			.newMockElement.boxes-vertical ul li, .mockElement.boxes-vertical ul li{
+				margin: 4% 0 0 0;
+				font-family: "Comic Sans MS","Comic Sans",cursive;
+				width: 99%;
+				padding: 0.2em;
+				flex: 1 1 100%;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: center;
+				border: 1px solid rgb(128, 128, 128);
+				border-collapse: collapse;
+			}
+
+			.mockElement.boxes-vertical ul li.item-highlighted{
+				background: #DDD;
+			}
+
+		/*meta: note*/
+		.newMockElement.note, .mockElement.note{
+		background: #f7ee9e;
+		background: linear-gradient(to bottom, #f7ee9e 0%,#e0d68f 99%);
+		border: 0px none;
+		box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.4);
+		transform: rotate(-3deg);
+		width:150px;
+		height:150px;
+		}
+
+		.newMockElement.note > *, .mockElement.note > *{
+			transform: rotate(3deg); /*so the text is not rotated*/
+		}
+
+		.newMockElement.note .editableArea, .mockElement.note .editableArea{
+			padding:0.5em;
+		}
 	</style>
 </head>
 
 <body>
 	<ul id="widgetCollection">
+		<!--
+
+		Tentative Description for creating elements:
+
+			In each list Element goes a div. This Div is the Interface Element which can be dragged to the canvas.
+			Each element has the class "newMockElement". This is changed to "mockElement" when it is added to the cavas.
+			Also each element can have other classes.
+
+			In the Div there can be other nested elements.
+
+			One of these elements *can* hold text that can be edited.  This is done by adding the attribute "data-editablearea" to this element.
+
+			The way the text is edited can be customized, by adding the attribute data-editable-mode= to it. The attribute can have the following values: "markdown", "uielements", "plain". If you set nothing, markdown is assumed.
+
+			markdown: Is markdown with a table extension and the possibility to create radiobuttons via "(x)" and checkboxes via [x]
+			uielements: for creating lists where the items are spereated by a ";". List items can be made "active" by adding a "*" in front: "normal; normal; *I am Active; normal item again; …"
+			plain: plain text
+
+			DONT:
+			* give the element and id. IDs are unique and we want to be able to add multiple instances of the element to the canvas. Also, the id is set by the program anyway.
+
+
+
+		-->
+
 		<li>
 			<div class="newMockElement" style="
 				justify-content: center;
@@ -279,11 +524,12 @@ DONE:
 				width: 8em;
 				height:3em;
 				">
-				<span class="editableArea" data-markdown-content="OK">OK</span>
+				<span class="editableArea" data-editable-content="OK" data-editable-mode="plain">OK</span>
 			</div>
+			<p class="description-newMockElement">Button</p>
 		</li>
 		<li><!-- Dialog Window -->
-			<div class="newMockElement dialogWindow" data-markdown-content="myWindow"
+			<div class="newMockElement dialogWindow" data-editable-content="myWindow"
 			style="
 				border:2px solid gray;
 				border-radius:3px;
@@ -304,10 +550,7 @@ DONE:
 			</div>
 		</li>
 		<li><!-- Tabs -->
-			<div class="newMockElement tabs" data-markdown-content="
-* Tab1
-* Tab2
-			">
+			<div class="newMockElement tabs" data-editable-content="Tab1;*Tab2; Tab3" data-editable-mode="uielements">
 				<div class="editableArea" >
 					<ul>
 						<li>Tab1</li>
@@ -318,12 +561,12 @@ DONE:
 			</div>
 		</li>
 		<li>
-			<div class="newMockElement" data-markdown-content="headline1">
+			<div class="newMockElement" data-editable-content="headline1">
 				<h1 class="editableArea">Headline1</h1>
 			</div>
 		</li>
 		<li>
-			<div class="newMockElement" data-markdown-content="
+			<div class="newMockElement" data-editable-content="
 Testparagraphy. Look, a
 
 * List
@@ -336,7 +579,7 @@ Testparagraphy. Look, a
 			</div>
 		</li>
 		<li>
-		<div class="newMockElement table" data-markdown-content="
+		<div class="newMockElement table" data-editable-content="
 | h1    |    h2   |      h3 |
 |:------|:-------:|--------:|
 | 100   | [a][1]  | ![b][2] |
@@ -364,27 +607,73 @@ Testparagraphy. Look, a
 			</div>
 		</li>
 		<li>
-			<div class="newMockElement optionCheckbox" data-markdown-content="**radio button**
+			<div class="newMockElement optionCheckbox" data-editable-content="**radio button**
 *checkbox*
 *other checkbox*">
 				<div class="editableArea"></div>
 			</div>
-			<div class="newMockElement optionRadiobutton" data-markdown-content="**radio button**
+			<div class="newMockElement optionRadiobutton" data-editable-content="**radio button**
 *checkbox*
 *other checkbox*">
 				<div class="editableArea"></div>
 			</div>
 		</li>
 		<li>
-			<div class="newMockElement dropdownList" data-markdown-content="DropdownTitle">
-				<span class="editableArea">Dropdown Title</span><span class="mackelement-dropdown-arrow">▾</span>
+			<div class="newMockElement dropdownList" data-editable-content="DropdownTitle">
+				<span class="editableArea editableContent-plaintext">Dropdown Title</span><span class="mockelement-dropdown-arrow">▾</span>
 			</div>
 		</li>
 		<li>
-			<div class="newMockElement">
-				<p>
-					Lorem <br> Ipsum <br> dolor
-				</p>
+			<div class="newMockElement loadingIndicator" data-editable-content="50%" data-editable-mode="plain">
+				<div class="bar"></div>
+				70%
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement entries-horizontal" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+				<div class="editableArea" >
+					<ul>
+						<li>Entry1</li>
+						<li>Entry2</li>
+					</ul>
+				</div>
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement entries-vertical" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+				<div class="editableArea" >
+					<ul>
+						<li>Entry1</li>
+						<li>Entry2</li>
+					</ul>
+				</div>
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement boxes-horizontal" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+				<div class="editableArea" >
+					<ul>
+						<li>Entry1</li>
+						<li>Entry2</li>
+					</ul>
+				</div>
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement boxes-vertical" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+				<div class="editableArea" >
+					<ul>
+						<li>Entry1</li>
+						<li>Entry2</li>
+					</ul>
+				</div>
+			</div>
+		</li>
+
+		<li>
+			<div class="newMockElement meta-element note" data-editable-content="Notes here!" data-editable-mode="markdown">
+				<div class="editableArea" >
+				</div>
 			</div>
 		</li>
 
@@ -433,6 +722,7 @@ $(function(){
 		accept: ".mockElement, .newMockElement",
 		tolerance: "fit",
 		greedy: true, //you can only attach it to one element, otherwise every nested dropable recieves
+		hoverClass: "drop-hover",
 		drop: function( event, ui ) {
 			//calculate offset of both
 			var elementToAppend = null;
@@ -441,8 +731,17 @@ $(function(){
 				elementToAppend = ui.draggable.clone(false)
 				elementToAppend.removeClass("newMockElement");
 
-				elementToAppend.addClass("mockElement")
+				elementToAppend.addClass("mockElement");
 				elementToAppend.css("position","absolute");//always has relative otherwise = glitches
+
+				var idnr = parseInt(Math.random()*100000000000000); //not exactly a UUID but does the job for now.
+
+				elementToAppend.attr("id","mockElement_"+idnr);
+				//TODO: assign an id "editableArea"+idnr
+
+				elementToAppend.find(".editableArea").first().attr("id","editableArea_"+idnr)
+
+				setupElement(elementToAppend);
 			}else{
 				elementToAppend = ui.draggable;
 			}
@@ -454,7 +753,6 @@ $(function(){
 			var newTop = draggableOffset.top -  droppableOffset.top;
 
 			elementToAppend.appendTo($(this)).css({top:newTop+"px", left:newLeft+"px"});
-			setupElement(elementToAppend);
 			}
 		});//droppable End
 	}//droppableWrapper End
@@ -537,6 +835,7 @@ $(function(){
 							find('input[name="width"]').
 							val()
 						);
+					$(this).dialog( "close" );
 					}
 				},
 				{
@@ -558,46 +857,19 @@ $(function(){
 			$("#changeCanvasSizeDialog").dialog("open");
 		});
 
-		/*
-		//TODO: classnames could be better: toolbar-button button-function
-			var $container = $("#container");
-
-			var currentHeight = $container.height();
-			var currentWidth = $container.width();
-
-			var $resizeDialog = $('<div style="position:fixed; top:10em; left:45vw; width:5vw; height:2vh; background:gray;"><input type="text" name="width"><br><input type="text" name="height"></div>');
-			$resizeDialog.find('input[name="height"]').val(currentHeight);
-			$resizeDialog.find('input[name="width"]').val(currentWidth);
-
-
-			$button = $("<button>ok</button>");
-
-			$button.click(function(){
-				$container.height($resizeDialog.find('input[name="height"]').val());
-				$container.width($resizeDialog.find('input[name="width"]').val());
-
-				$resizeDialog.remove();
-			});
-
-			$resizeDialog.append($button);
-
-			$("body").append($resizeDialog);
-		})
-			*/
-
-
-
 		//setup canvas
 		makeDropableElement("#container");
 	};
 
 	setupGUI();
 
+	//setup elements already on the page
 	$(".mockElement").each(function(index, element){
 		$(element).find(".ui-resizable-handle").remove();//otherwise we get them twice, they are saved with the file and created again when the element is initialized
 		setupElement(element);
 	});
 
+	//make new siebar elements draggabe
 	$(".newMockElement").draggable({
 		distance: 4,
 		disabled:false,
