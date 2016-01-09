@@ -1,10 +1,13 @@
+#QuickMockup
 
-quickMockup is a simple tool for creating simple mockups of Interfaces and Websites
+QuickMockup is a simple tool for creating simple mockups of Interfaces and Websites. 
+
+[Try the demo](https://jdittrich.github.io/quickMockup/)
 
 It is HTML based and javascript-enhanced.
 
 --------------------
-![Screenshot](http://i.imgur.com/D4B3ggc.png)
+![Screenshot](https://i.imgur.com/D4B3ggc.png)
 --------------------
 
 ## Usecase
