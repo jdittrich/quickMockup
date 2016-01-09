@@ -1,6 +1,7 @@
 <!--
 TODO:
-* Meta Elements: Note (shrinkwrapping/scrolling Text), Headline to link to, possibly via an automatic TOC dropdown menu.
+* Meta-Element: Sticky Arrow
+* Put styles of early elements (button , window etc.) into stylesheet instead of inline
 * clear seperation of interactive and non interactive elements. GUI should be hidden in markup but made visible when external javascript is present. Thus: gui Javascript can go to a file.
 Thus: element CSS and essential displaying stuff-css must remain in the file.
 
@@ -14,7 +15,7 @@ DONE:
 * meaningful positioning of the text-edit element via pos. absolute
 * Change canvas size
 * activate/Deactivate markdown parsing for each element type (when markdown, server textarea, otherwise simple input): Simple parsing now activated via editableContent-plaintext to the editableArea
-
+* Meta Elements: Note (shrinkwrapping/scrolling Text)
 
 --->
 
@@ -35,12 +36,15 @@ DONE:
 
 		<script src="jqUiEditMD2HTML.js"></script>
 
-
 		<link href="jquery-ui.css" rel="stylesheet">
+		<link href="mockupElementsInteractive.css" rel="stylesheet">
 
 
 		<style>
-				body{
+		body{
+			overflow: hidden;
+		}
+		body, div{
 			padding:0;
 			margin:0;
 
@@ -59,32 +63,49 @@ DONE:
 		}
 
 		.newMockElement{
-			/*background: gray;*/
 			width: 50px;
 			height: 50px;
-			/*position: absolute; not needed*/
 		}
-
+/*
 			.bigmockElement{
 				width: 100px;
 				height: 100px;
 				position: absolute;
 				background: #a29eb2;
+			}*/
+
+			#appContainer{
+			margin: 0px;
+			padding: 0px;
+			display: flex;
+			height: 100vh;
+			width: 100vw;
 			}
 
-			#container{
+			#canvasWrap { /*wraps... canvas! (to enable scrolling it)*/
+			overflow: scroll;
+			margin: 0px;
+			padding: 0px;
+			flex: 1 1 100%;
+			position: relative;/*so that canvas is positioned against it*/
+			}
+
+			#canvas{/*holds the mockup elements*/
 				position: absolute;
-				margin:0 0 0 10vw;
-				padding:0 0 0 0;
-				width:90vw;
-				height:100vh;
-
+				margin:0;
+				padding:0;
+				width: 1000px;
+				height:2000px;
 			}
 
+			#widgetCollectionWrap{
+				width:200px;
+				height: 100%;
+			}
 			#widgetCollection{
-				position:fixed;
-				width: 10vw;
+				position:relative;
 				height:100%;
+				width: 100%;
 				padding:0;
 				margin:0;
 				overflow-y: scroll;
@@ -94,7 +115,10 @@ DONE:
 			#widgetCollection>li{
 				list-style-type: none;
 				padding: 0.5em;
-				border-bottom:1px solid silver
+				border-bottom:1px solid silver;
+				overflow: hidden;
+				width: 100%;
+
 			}
 
 			#toolbar{
@@ -117,12 +141,12 @@ DONE:
 
 			}
 
-			.ui-resizable>.ui-resizable-handle{
+			#canvas .ui-resizable>.ui-resizable-handle{
 				pointer-events: none;
 				background: rgba(0,0,0,0.0);
 			}
 
-			.custom-selected.ui-resizable>.ui-resizable-handle{
+			#canvas .custom-selected.ui-resizable>.ui-resizable-handle{
 				pointer-events: auto;
 				background: rgba(0,0,0,0.5);
 			}
@@ -133,19 +157,19 @@ DONE:
 
 
 			/*JQUERY UI Modifacations, makes handles inkscape-style*/
-			.ui-selected { background: #F39814; color: white; }
+			#canvas .ui-selected { background: #F39814; color: white; }
 
 
-			.ui-resizable-handle{width:8px !important; height: 8px !important;} /*all handles*/
+			#canvas .ui-resizable-handle{width:8px !important; height: 8px !important;} /*all handles*/
 
-			.ui-resizable-n{left: calc(50% - 4px); top:-5px}
-			.ui-resizable-e{right:-5px; top:calc(50% - 4px)}
-			.ui-resizable-s{left:calc(50% - 4px); bottom:-5px}
-			.ui-resizable-w{left:-5px; top:calc(50% - 4px)}
-			.ui-resizable-ne{right:-5px;top:-5px}
-			.ui-resizable-se{right:-5px;bottom: -5px;}
-			.ui-resizable-sw{left:-5px; bottom:-5px;}
-			.ui-resizable-nw{left:-5px; top:-5px;}
+			#canvas  .ui-resizable-n{left: calc(50% - 4px); top:-5px}
+			#canvas  .ui-resizable-e{right:-5px; top:calc(50% - 4px)}
+			#canvas  .ui-resizable-s{left:calc(50% - 4px); bottom:-5px}
+			#canvas .ui-resizable-w{left:-5px; top:calc(50% - 4px)}
+			#canvas .ui-resizable-ne{right:-5px;top:-5px}
+			#canvas .ui-resizable-se{right:-5px;bottom: -5px;}
+			#canvas .ui-resizable-sw{left:-5px; bottom:-5px;}
+			#canvas .ui-resizable-nw{left:-5px; top:-5px;}
 
 			.drop-hover{
 				outline:2px solid rgba(0,0,0,0.3);
@@ -159,10 +183,15 @@ DONE:
 				box-sizing: border-box;
 				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 			}
-			.newMockElement > div:editableArea, .mockElement > div.editableArea{
+			.newMockElement > div.editableArea, .mockElement > div.editableArea{
 				width: 100%;
 				box-sizing: border-box;
 			}
+
+			.newMockElement, .mockElement{
+				width:150px; /*if not specifies otherwise*/
+			}
+
 			/*buttons*/
 			.newMockElement.button, .mockElement.button{
 				justify-content: center;
@@ -187,15 +216,18 @@ DONE:
 				margin:0;
 			}
 
-			.newMockElement.tabs>.editableArea ul, .mockElement.tabs>.editableArea ul{
+			.newMockElement.tabs>.editableArea a, .mockElement.tabs>.editableArea a{
+				pointer-events: none; /*prevent accidental navigation*/
+			}
+
+			.newMockElement.tabs>.editableArea>ul, .mockElement.tabs>.editableArea>ul{
 				box-sizing: border-box;
 				width:100%;
 				margin:0;
 				padding:0;
-
 			}
 
-			.newMockElement.tabs ul li, .mockElement.tabs ul li{
+			.newMockElement.tabs>.editableArea>ul>li, .mockElement.tabs> .editableArea>ul>li{
 				display: inline-block;
 				padding: 5px 16px;
 				border: 1px solid gray;
@@ -205,13 +237,22 @@ DONE:
 				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 			}
 
-			.mockElement.tabs ul li.item-highlighted{
+			.mockElement.tabs>.editableArea>ul>li.item-highlighted{
 				background: #DDD;
 			}
 
-			/*menu*/
+			.newMockElement.label .mockElement.label{
+				width:7em;
+			}
 
 			/*headline*/
+			.newMockElement.headline>h1, .mockElement.headline>h1{
+				margin:0;
+			}
+			/*paragraph*/
+			.newMockElement.paragraph>p{
+				margin:0;
+			}
 
 			/*table*/
 			.newMockElement.table, .mockElement.table{
@@ -237,14 +278,51 @@ DONE:
 			}
 
 			/*optionlist*/
+
 			.newMockElement.optionRadiobutton , .mockElement.optionRadiobutton{
 				box-sizing: border-box;
 			}
 
-			.newMockElement.optionRadiobutton .editableArea, .mockElement.optionlist .editableArea{
-				box-sizing: border-box;
-				width:100%;
+			.newMockElement.optionRadiobutton .editableArea li, .mockElement.optionRadiobutton .editableArea li{
+				display: block;
 			}
+
+			.newMockElement.optionRadiobutton ul, .mockElement.optionRadiobutton ul{
+				margin:0;
+				padding: 0;
+			}
+
+			.newMockElement.optionRadiobutton .editableArea li::before, .mockElement.optionRadiobutton .editableArea li::before{
+				content:"○ "
+			}
+
+			.newMockElement.optionRadiobutton .editableArea li.item-highlighted::before, .mockElement.optionRadiobutton .editableArea li.item-highlighted::before{
+				content:"◉ "
+			}
+
+			/*Checkboxes*/
+			.newMockElement.optionCheckbox , .mockElement.optionCheckbox{
+				box-sizing: border-box;
+			}
+
+			.newMockElement.optionCheckbox .editableArea li, .mockElement.optionCheckbox .editableArea li{
+				display: block;
+			}
+
+			.newMockElement.optionCheckbox ul, .mockElement.optionCheckbox ul{
+				margin:0;
+				padding: 0;
+			}
+
+
+			.newMockElement.optionCheckbox .editableArea li::before, .mockElement.optionCheckbox .editableArea li::before{
+				content:"☐ "
+			}
+
+			.newMockElement.optionCheckbox .editableArea li.item-highlighted::before, .mockElement.optionCheckbox .editableArea li.item-highlighted::before{
+				content:"☑ ";
+			}
+
 
 
 			/*Dropdown*/
@@ -447,7 +525,7 @@ DONE:
 			}
 
 			.newMockElement.boxes-vertical ul li, .mockElement.boxes-vertical ul li{
-				margin: 4% 0 0 0;
+				margin: 1.5% 0 0 0;
 				font-family: "Comic Sans MS","Comic Sans",cursive;
 				width: 99%;
 				padding: 0.2em;
@@ -482,207 +560,289 @@ DONE:
 		.newMockElement.note .editableArea, .mockElement.note .editableArea{
 			padding:0.5em;
 		}
+
+		/*Meta: arrow note*/
+		.newMockElement.arrownote, .mockElement.arrownote{
+		background: #f7ee9e;
+		border: 0px none;
+		box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.4);
+		width:150px;
+		height:30px;
+		}
+
+		.newMockElement.arrownote .editableArea, .mockElement.arrownote .editableArea{
+			padding:0.2em;
+		}
+
+		.newMockElement.arrownote::before, .mockElement.arrownote::before{
+			width: 0;
+		height: 0;
+		margin-left:-15px;
+		margin-top:0px;
+		border-style: solid;
+		border-width: 15px 15px 15px 0;
+		border-color: transparent #eae193 transparent transparent;
+	content:"";
+	position:absolute
+		}
+
+
+
+
+		.newMockElement.note .editableArea, .mockElement.note .editableArea{
+			padding:0.5em;
+		}
 	</style>
 </head>
 
 <body>
+<div id="appContainer">
+<div id="widgetCollectionWrap">
 	<ul id="widgetCollection">
 		<!--
 
-		Tentative Description for creating elements:
+				Tentative Description for creating elements:
 
-			In each list Element goes a div. This Div is the Interface Element which can be dragged to the canvas.
-			Each element has the class "newMockElement". This is changed to "mockElement" when it is added to the cavas.
-			Also each element can have other classes.
+					In each list Element goes a div. This Div is the Interface Element which can be dragged to the canvas.
+					Each element has the class "newMockElement". This is changed to "mockElement" when it is added to the cavas.
+					Also each element can have other classes.
 
-			In the Div there can be other nested elements.
+					In the Div there can be other nested elements.
 
-			One of these elements *can* hold text that can be edited.  This is done by adding the attribute "data-editablearea" to this element.
+					One of these elements *can* hold text that can be edited.  This is done by adding the attribute "data-editablearea" to this element.
 
-			The way the text is edited can be customized, by adding the attribute data-editable-mode= to it. The attribute can have the following values: "markdown", "uielements", "plain". If you set nothing, markdown is assumed.
+					The way the text is edited can be customized, by adding the attribute data-editable-mode= to it. The attribute can have the following values: "markdown", "uielements", "plain". If you set nothing, markdown is assumed.
 
-			markdown: Is markdown with a table extension and the possibility to create radiobuttons via "(x)" and checkboxes via [x]
-			uielements: for creating lists where the items are spereated by a ";". List items can be made "active" by adding a "*" in front: "normal; normal; *I am Active; normal item again; …"
-			plain: plain text
+					markdown: Is markdown with a table extension and the possibility to create radiobuttons via "(x)" and checkboxes via [x]
+					uielements: for creating lists where the items are seperated by a ";". List items can highlighted (item-highlighted class is added to the <li> element) by adding a "*" in front: "normal; normal; *I am Active; normal item again; …"
+					plain: plain text
 
-			DONT:
-			* give the element and id. IDs are unique and we want to be able to add multiple instances of the element to the canvas. Also, the id is set by the program anyway.
+					DO: give your element an additional (aside the newMockupElement) class: "newMockupElement fooBarClass".
+
+					DO: Use ">" (direct child) instead of the " " (descendant operator); If elements are nested it can have strange side effects since the nested element will have styles that it did not have before.
+
+					DONT:
+					* give the element an id. The id is set by the script.
+
+				-->
+
+				<li>
+					<div class="newMockElement" style="
+						justify-content: center;
+						align-items: center;
+						display: flex;
+						border:2px solid #333;
+						border-radius:3px;
+						font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+						background-white;
+						width: 8em;
+						height:3em;
+						"  data-editable-content="OK" data-editable-mode="plain">
+						<span class="editableArea">OK</span>
+					</div>
+				</li>
+				<li><!-- Dialog Window -->
+					<div class="newMockElement dialogWindow" data-editable-content="myWindow" data-editable-mode="plain"
+					style="
+						border:2px solid gray;
+						border-radius:3px;
+						width: 400px;
+						height:200px;
+						font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+						">
+						<div style="
+							background-color:silver;
+							border-bottom: 2px solid #333;
+							border-radius: 3px;
+							padding:7px;
+							height:1.6em;
+						">
+							<span class="editableArea" style="float:left; padding:4px;" >Titel</span>
+							<span style="padding:4px; font-size:1.5em; margin-top: -0.4em; float:right;">×</span>
+						</div>
+					</div>
+				</li>
 
 
+				<li><!-- Tabs -->
+					<div class="newMockElement tabs" data-editable-content="Tab1;*Tab2; Tab3" data-editable-mode="uielements">
+						<div class="editableArea" >
+							<ul>
+								<li>Tab1</li>
+								<li>Tab2</li>
+							</ul>
 
-		-->
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement label" data-editable-content="label" data-editable-mode="plain">
+						<div class="editableArea">Label</div>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement headline" data-editable-content="headline1" data-editable-mode="plain">
+						<h1 class="editableArea">Headline1</h1>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement paragraph" data-editable-content="
+Paragraph
+(Markdown **Supported** !)">
+						<div class="editableArea">
+							Paragraph
+							(Markdown<strong> Supported</strong>!)
+						</div>
+					</div>
+				</li>
+				<li>
+				<div class="newMockElement table" data-editable-content="
+		| h1    |    h2   |      h3 |
+		|:------|:-------:|--------:|
+		| 100   | [a][1]  | ![b][2] |
+		| *foo* | **bar** | ~~baz~~ |
+					">
+					<div class="editableArea">
+						<table><thead>
+						<tr>
+						<th style="text-align:left;">h1</th>
+						<th style="text-align:center;">h2</th>
+						</tr>
+						</thead>
 
-		<li>
-			<div class="newMockElement" style="
-				justify-content: center;
-				align-items: center;
-				display: flex;
-				border:2px solid #333;
-				border-radius:3px;
-				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-				background-white;
-				width: 8em;
-				height:3em;
-				">
-				<span class="editableArea" data-editable-content="OK" data-editable-mode="plain">OK</span>
+						<tbody>
+						<tr>
+						<td style="text-align:left;">100</td>
+						<td style="text-align:center;">[a][1]</td>
+						</tr>
+						</tbody></table>
+					</div>
 			</div>
-			<p class="description-newMockElement">Button</p>
-		</li>
-		<li><!-- Dialog Window -->
-			<div class="newMockElement dialogWindow" data-editable-content="myWindow"
-			style="
-				border:2px solid gray;
-				border-radius:3px;
-				width: 400px;
-				height:200px;
-				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-				">
-				<div style="
-					background-color:silver;
-					border-bottom: 2px solid #333;
-					border-radius: 3px;
-					padding:7px;
-					height:1.6em;
-				">
-					<span class="editableArea" style="float:left; padding:4px;" >Titel</span>
-					<span style="padding:4px; font-size:1.5em; margin-top: -0.4em; float:right;">×</span>
-				</div>
-			</div>
-		</li>
-		<li><!-- Tabs -->
-			<div class="newMockElement tabs" data-editable-content="Tab1;*Tab2; Tab3" data-editable-mode="uielements">
-				<div class="editableArea" >
-					<ul>
-						<li>Tab1</li>
-						<li>Tab2</li>
-					</ul>
+				</li>
+				<li>
+					<div class="newMockElement rect">
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement optionCheckbox" data-editable-content="bla; bla; *basd"  data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>option</li>
+								<li class="item-highlighted">other option</li>
+							</ul>
 
-				</div>
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement" data-editable-content="headline1">
-				<h1 class="editableArea">Headline1</h1>
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement" data-editable-content="
-Testparagraphy. Look, a
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement optionRadiobutton" data-editable-content="bla; bla; *basd"  data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>option</li>
+								<li class="item-highlighted">other option</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement dropdownList" data-editable-content="DropdownTitle"  data-editable-mode="plain">
+						<span class="editableArea">Dropdown Title</span><span class="mockelement-dropdown-arrow">▾</span>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement loadingIndicator" >
+						<div class="bar"></div>
+						70%
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement entries-horizontal" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+						<div class="editableArea" >
+							<ul>
+								<li>Entry1</li>
+								<li>Entry2</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement entries-vertical" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+						<div class="editableArea" >
+							<ul>
+								<li>Entry1</li>
+								<li>Entry2</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement boxes-horizontal" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+						<div class="editableArea" >
+							<ul>
+								<li>Entry1</li>
+								<li>Entry2</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement boxes-vertical" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+						<div class="editableArea" >
+							<ul>
+								<li>Entry1</li>
+								<li>Entry2</li>
+							</ul>
+						</div>
+					</div>
+				</li>
 
-* List
-* List2
+				<li>
+					<div class="newMockElement meta-element note" data-editable-content="Notes here!" data-editable-mode="markdown">
+						<div class="editableArea" >
+						</div>
+					</div>
+				</li>
 
-(markdown supported!)">
-				<p class="editableArea">
-					Paragraph
-				</p>
-			</div>
-		</li>
-		<li>
-		<div class="newMockElement table" data-editable-content="
-| h1    |    h2   |      h3 |
-|:------|:-------:|--------:|
-| 100   | [a][1]  | ![b][2] |
-| *foo* | **bar** | ~~baz~~ |
-			">
-			<div class="editableArea">
-				<table><thead>
-				<tr>
-				<th style="text-align:left;">h1</th>
-				<th style="text-align:center;">h2</th>
-				</tr>
-				</thead>
-
-				<tbody>
-				<tr>
-				<td style="text-align:left;">100</td>
-				<td style="text-align:center;">[a][1]</td>
-				</tr>
-				</tbody></table>
-			</div>
-	</div>
-		</li>
-		<li>
-			<div class="newMockElement rect">
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement optionCheckbox" data-editable-content="**radio button**
-*checkbox*
-*other checkbox*">
-				<div class="editableArea"></div>
-			</div>
-			<div class="newMockElement optionRadiobutton" data-editable-content="**radio button**
-*checkbox*
-*other checkbox*">
-				<div class="editableArea"></div>
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement dropdownList" data-editable-content="DropdownTitle">
-				<span class="editableArea editableContent-plaintext">Dropdown Title</span><span class="mockelement-dropdown-arrow">▾</span>
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement loadingIndicator" data-editable-content="50%" data-editable-mode="plain">
-				<div class="bar"></div>
-				70%
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement entries-horizontal" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
-				<div class="editableArea" >
-					<ul>
-						<li>Entry1</li>
-						<li>Entry2</li>
-					</ul>
-				</div>
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement entries-vertical" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
-				<div class="editableArea" >
-					<ul>
-						<li>Entry1</li>
-						<li>Entry2</li>
-					</ul>
-				</div>
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement boxes-horizontal" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
-				<div class="editableArea" >
-					<ul>
-						<li>Entry1</li>
-						<li>Entry2</li>
-					</ul>
-				</div>
-			</div>
-		</li>
-		<li>
-			<div class="newMockElement boxes-vertical" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
-				<div class="editableArea" >
-					<ul>
-						<li>Entry1</li>
-						<li>Entry2</li>
-					</ul>
-				</div>
-			</div>
-		</li>
-
-		<li>
-			<div class="newMockElement meta-element note" data-editable-content="Notes here!" data-editable-mode="markdown">
-				<div class="editableArea" >
-				</div>
-			</div>
-		</li>
-
-
+				<li>
+					<div class="newMockElement meta-element arrownote" data-editable-content="Notes here!" data-editable-mode="plain">
+						<div class="editableArea" >
+						note!
+						</div>
+					</div>
+				</li>
 	</ul>
+	</div>
 
 
-	<div id="container">
+	<div id="canvasWrap">
+					<div style="height: 2000px; width: 2000px;" class="ui-droppable" id="canvas">
 
+		<div id="mockElement_26761610563949" style="position: absolute; top: 31px; left: 31px; z-index: auto; width: 788px; right: auto; height: 440px; bottom: auto;" class="rect ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable">
+					<div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-n"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-e"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-s"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-w"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-sw"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-ne"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-nw"></div><div id="mockElement_20253848676149" style="position: absolute; top: 8px; left: 34px; width: 548px;" class="headline ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="I try to solve a problem" data-editable-mode="plain">
+						<h1 id="editableArea_20253848676149" class="editableArea">I try to solve a problem</h1>
+					<div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-n"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-e"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-s"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-w"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-sw"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-ne"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-nw"></div></div><div id="mockElement_64002219983074" style="position: absolute; top: 119.467px; left: 521.9px; z-index: auto; width: 187px; right: auto; height: 212px; bottom: auto;" class="meta-element note ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Testmockup!" data-editable-mode="markdown">
+						<div id="editableArea_64002219983074" class="editableArea"><p>Testmockup!</p></div>
+					<div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-n"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-e"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-s"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-w"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-sw"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-ne"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-nw"></div></div><div id="mockElement_21414535692512" class="dialogWindow ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="myWindow" data-editable-mode="plain" style="border: 2px solid gray; border-radius: 3px; width: 473px; height: 269px; font-family: &quot;Comic Sans MS&quot;,&quot;Comic Sans&quot;,cursive; position: absolute; top: 134px; left: 30px; z-index: auto; right: auto; bottom: auto;">
+						<div style="
+							background-color:silver;
+							border-bottom: 2px solid #333;
+							border-radius: 3px;
+							padding:7px;
+							height:1.6em;
+						">
+							<span id="editableArea_21414535692512" class="editableArea" style="float:left; padding:4px;">myWindow</span>
+							<span style="padding:4px; font-size:1.5em; margin-top: -0.4em; float:right;">×</span>
+						</div>
+					<div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-n"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-e"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-s"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-w"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-sw"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-ne"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-nw"></div><div id="mockElement_70594603030604" style="position: absolute; top: 59px; left: 27px; height: 167px; width: 396px; z-index: auto; right: auto; bottom: auto;" class="tabs ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="Tab1;*Tab2; Tab3" data-editable-mode="uielements">
+						<div id="editableArea_70594603030604" class="editableArea"><ul><li>Tab1</li><li class="item-highlighted">Tab2</li><li> Tab3</li></ul></div>
+					<div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-n"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-e"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-s"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-w"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-sw"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-ne"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-nw"></div><div id="mockElement_58964013194714" style="position: absolute; top: 47.4333px; left: 17px; z-index: auto; width: 150px; right: auto; height: 50px; bottom: auto;" class="optionRadiobutton ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="bla;*basd" data-editable-mode="uielements">
+						<div id="editableArea_58964013194714" class="editableArea"><ul><li>bla</li><li class="item-highlighted">basd</li></ul></div>
+					<div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-n"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-e"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-s"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-w"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-sw"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-ne"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-nw"></div></div><div id="mockElement_97303047754418" style="position: absolute; top: 57.4333px; left: 167px; width: 144px; height: 32px; z-index: auto; right: auto; bottom: auto;" class="dropdownList ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" data-editable-content="DropdownTitle" data-editable-mode="plain">
+						<span id="editableArea_97303047754418" class="editableArea">DropdownTitle</span><span class="mockelement-dropdown-arrow">▾</span>
+					<div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-n"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-e"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-s"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-w"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-sw"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-ne"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-nw"></div></div><div id="mockElement_99523679837529" class="ui-draggable ui-draggable-handle mockElement ui-resizable ui-droppable" style="justify-content: center; align-items: center; display: flex; border: 2px solid rgb(51, 51, 51); border-radius: 3px; font-family: &quot;Comic Sans MS&quot;,&quot;Comic Sans&quot;,cursive; width: 128px; height: 31px; position: absolute; top: 122px; left: 182px; z-index: auto; right: auto; bottom: auto;" data-editable-content="OK" data-editable-mode="plain">
+						<span id="editableArea_99523679837529" class="editableArea">OK</span>
+					<div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-n"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-e"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-s"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-w"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-sw"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-ne"></div><div style="z-index: 90; display: block;" class="ui-resizable-handle ui-resizable-nw"></div></div></div></div></div></div>
+		</div>
 	</div>
 
 	<div id="toolbar">
@@ -714,7 +874,7 @@ $(function(){
 		makeMovableElement(element);
 		makeDropableElement(element);
 		$(element).editText();
-		makeSelectableElement(element,"#container");
+		makeSelectableElement(element,"#canvas");
 	}
 
 	var makeDropableElement= function(element){
@@ -803,7 +963,7 @@ $(function(){
 		$("#changeCanvasSizeDialog").dialog({
 			autoOpen:false,
 			open: function( event, ui ) {
-				var $container = $("#container");
+				var $container = $("#canvas");
 
 				var currentHeight = $container.height();
 				var currentWidth = $container.width();
@@ -821,7 +981,7 @@ $(function(){
 				{
 					text: "OK",
 					click: function() {
-					var $container = $("#container");
+					var $container = $("#canvas");
 
 					$container.
 						height(
@@ -856,9 +1016,19 @@ $(function(){
 		$("#toolbar .change-canvasize-button").click(function(){
 			$("#changeCanvasSizeDialog").dialog("open");
 		});
+		//setup sidebar resize
+		$('#widgetCollectionWrap').resizable({
+			handles: 'e',
+			maxWidth:800,
+		})
 
 		//setup canvas
-		makeDropableElement("#container");
+		makeDropableElement("#canvas");
+
+		// prevent navigating away by accident
+		window.onbeforeunload = function(){
+			return "do you want to close the application? Unsaved changes will be lost (use your browsers save function for saving)"
+		};
 	};
 
 	setupGUI();
