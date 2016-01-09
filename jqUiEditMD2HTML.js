@@ -22,13 +22,12 @@
 
 			this.$editableElement = this.element.find("#"+"editableArea_"+idNr);
 
-			if(this.$editableElement.length === 0){return;} //if there is no editableElement belonging to this, return.
+			this.editType = this.element.attr("data-editable-mode");
 
-			var editType = this.element.attr("data-editable-mode");
-
-			if(editType==="plain"){
-				this.toHTML = function(string){return string;}; //does nothing
-			} else if (editType==="uielements"){
+			if(this.editType==="plain"){
+				this.toHTML = function(string){
+					return string;}; //does nothing
+			} else if (this.editType==="uielements"){
 				this.toHTML = uiElementsConverter;
 			} else {
 				markdownConverter = new showdown.Converter({
@@ -61,7 +60,8 @@
 
 			var editablePosition = this.$editableElement.position();
 
-			if(this.element.find(".editableArea").first().hasClass("editableContent-plaintext")){
+			/*if(this.element.find(".editableArea").first().hasClass("editableContent-plaintext")){*/
+			if(this.editType === 'plain'){
 				this.inputElement = $('<input type="text">',{
 				class:"plaintextinput",
 			});}else{
@@ -99,11 +99,9 @@
 		},
 		_leaveEditMode:function(){
 			var editableContent = this.inputElement.val(); //reads what the user wrote
-			if(this.element.find(".editableArea").first().hasClass("editableContent-plaintext")){
-				var html = editableContent;
-			} else {
-				var html = this.toHTML(editableContent);
-			}
+			/*if(this.element.find(".editableArea").first().hasClass("editableContent-plaintext")){*/
+
+			var html = this.toHTML(editableContent);
 
 			 //convert to html
 
@@ -131,7 +129,6 @@
 		}
 	});
 
-
 	function uiElementsConverter(string){
 		var itemsArray = string.split(/;/);
 		var highlightRegex = /^\s*\*/; //if this matches, the element around this text should be emphazied
@@ -143,10 +140,10 @@
 				newString = newString+'<li class="item-highlighted">';
 				//and strip the *
 				value = value.replace(highlightRegex,"");
+
 			}else{
 				newString = newString+'<li>';
 			}
-
 			//anyway, close the li
 			newString = newString+value+'</li>';
 		});
