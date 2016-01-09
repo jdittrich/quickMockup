@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+		<title>Edittests</title>
+		<meta charset="UTF-8">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<script src="jquery.js"></script>
+		<script src="jquery-ui.js"></script>
+		<script src="showdown.js"></script>
+		<link href="jquery-ui.css" rel="stylesheet">
+
+		<style>
+		.mockElement {
+
+			width: 50px;
+			height: 50px;
+			position: absolute;
+		}
+
+		.newMockElement{
+			/*background: gray;*/
+			width: 50px;
+			height: 50px;
+			/*position: absolute; not needed*/
+		}
+
+			.bigmockElement{
+				width: 100px;
+				height: 100px;
+				position: absolute;
+				background: #a29eb2;
+			}
+
+			#container{
+				position: absolute;
+				margin:0 0 0 10vw;
+				padding:0 0 0 0;
+				width:90vw;
+				height:100vh;
+
+			}
+
+			#widgetCollection{
+				position:fixed;
+				width: 10vw;
+				height:100%;
+				padding:0;
+				margin:0;
+				overflow-y: scroll;
+				overflow-x: visible;
+			}
+
+			#widgetCollection li{
+				list-style-type: none;
+			}
+
+			.ui-selected { background: #F39814; color: white; }
+		</style>
+</head>
+
+<body>
+	<ul id="widgetCollection">
+		<li>
+			<div class="newMockElement">
+				NEW!
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement" style="border-top:white 1px solid; border-right:2px gray solid; border-bottom:2px gray solid; border-left:1px solid white; background:#AAA; text-align:center">
+				<span class="editableArea">ok</span>
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement" style="border:1px solid #AAA; width: 400px; height:200px;">
+				<div style="text-align:right; background:blue;height:2em; width:100%">
+					<span style="border:1px solid gray; background red;">X</span>
+				</div>
+
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement">
+				<p>
+					Lorem <br> Ipsum <br> dolor
+				</p>
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement">
+				<p>
+					Lorem <br> Ipsum <br> dolor
+				</p>
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement">
+				<p>
+					Lorem <br> Ipsum <br> dolor
+				</p>
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement">
+				<p>
+					Lorem <br> Ipsum <br> dolor
+				</p>
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement">
+				<p>
+					Lorem <br> Ipsum <br> dolor
+				</p>
+			</div>
+		</li>
+		<li>
+			<div class="newMockElement">
+				<p>
+					Lorem <br> Ipsum <br> dolor
+				</p>
+			</div>
+		</li>
+
+
+	</ul>
+	<div id="container">
+
+	</div>
+<script>
+$(function(){
+	var makeMovableElement = function(element){
+		
+		$(element).draggable({
+			distance: 4,
+			disabled:false,
+			revert:"invalid",
+			zIndex: 999
+		}).resizable();
+
+		makeDropableElement(element);
+		makeEditableElement(element)
+	}
+
+
+
+	var makeDropableElement= function(element){
+		$(element).droppable({
+		accept: ".mockElement, .newMockElement",
+		tolerance: "fit",
+		greedy: true, //you can only attach it to one element, otherwise every nested dropable recieves
+		drop: function( event, ui ) {
+			//calculate offset of both
+			var elementToAppend = null;
+			
+			if(ui.draggable.hasClass("newMockElement")){//if this is a new element
+				elementToAppend = ui.draggable.clone(false)
+				elementToAppend.removeClass("newMockElement");
+				
+				//makeMovableElement(elementToAppend);
+				
+				elementToAppend.addClass("mockElement")
+				elementToAppend.css("position","absolute");//always has relative otherwise = glitches
+			}else{
+				elementToAppend = ui.draggable;
+			}
+
+			var draggableOffset = ui.helper.offset(); //was ui.draggable
+			var droppableOffset = $(this).offset();
+
+			var newLeft =  draggableOffset.left - droppableOffset.left;
+			var newTop = draggableOffset.top -  droppableOffset.top;
+
+			elementToAppend.appendTo($(this)).css({top:newTop+"px", left:newLeft+"px"});
+			makeMovableElement(elementToAppend);
+			}
+		});//droppable End
+	}//droppableWrapper End
+
+
+
+	var makeEditableElement = function(element){
+		var converter = new showdown.Converter();
+		
+		var $element = $(element);
+		
+		$element.dblclick(function(){
+			if($element.hasClass("isEditing")){
+				leaveEditMode();
+			} else {
+				gotToEditMode();
+			}
+		})
+		
+		
+		var gotToEditMode = function(){
+				var markdown = $element.attr("data-markdown-content");
+
+				console.log("dclicked!");
+
+				//write to edit window
+				$textarea = $("<textarea>",{
+					class:"markdowninput",
+					text: markdown
+				}).appendTo($element);
+				
+				$element.addClass("isEditing");
+			}
+	
+		var leaveEditMode = function(){
+			var markdown = $element.find(".markdowninput").val(); //reads what the user wrote
+			var html = converter.makeHTML(markdown); //convert to html
+
+			//write content
+			$element.
+				find(".editableArea").
+				first(). //saveguard if there are multiple editable Areas
+				html(html);
+
+			$element.removeClass("isEditing");
+		}
+		
+	};
+
+	makeDropableElement("#container");
+	
+	$(".mockElement").each(function(index, element){
+		makeMovableElement(element);
+	});
+	
+	$(".newMockElement").draggable({
+		distance: 4,
+		disabled:false,
+		appendTo: "body",
+		helper:"clone",
+		revert:"invalid",
+		zIndex:999
+	});
+});
+
+	</script>
+
+</body>
+
+</html>
