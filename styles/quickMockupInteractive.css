@@ -1,0 +1,123 @@
+
+
+body{
+			overflow: hidden;
+		}
+
+
+
+
+		.newMockElement{
+			width: 50px;
+			height: 50px;
+		}
+/*
+			.bigmockElement{
+				width: 100px;
+				height: 100px;
+				position: absolute;
+				background: #a29eb2;
+			}*/
+
+			#appContainer{
+			margin: 0px;
+			padding: 0px;
+			display: flex;
+			height: 100vh;
+			width: 100vw;
+			}
+
+			#canvasWrap { /*wraps... canvas! (to enable scrolling it)*/
+			overflow: scroll;
+			margin: 0px;
+			padding: 0px;
+			flex: 1 1 100%;
+			position: relative;/*so that canvas is positioned against it*/
+			}
+
+			#canvas{/*holds the mockup elements*/
+				position: absolute;
+				margin:0;
+				padding:0;
+				width: 1000px;
+				height:2000px;
+			}
+
+			#widgetCollectionWrap{
+				display: block;/*not displayed in the html-files style*/
+				width:200px;
+				height: 100%;
+			}
+			#widgetCollection{
+				position:relative;
+				height:100%;
+				width: 100%;
+				padding:0;
+				margin:0;
+				overflow-y: scroll;
+				overflow-x: hidden;
+			}
+
+			#widgetCollection>li{
+				list-style-type: none;
+				padding: 0.5em;
+				border-bottom:1px solid silver;
+				overflow: hidden;
+				width: 100%;
+
+			}
+
+			#toolbar{
+				display: block; /*not displayed in the html-files style*/
+				position:fixed;
+				top:0;
+				right:0;
+			}
+
+			#toolbar button{
+				display: inline-block;
+				opacity: 0.5;
+				z-index: 9999;
+			}
+
+			#toolbar:hover button{
+				opacity: 1;
+			}
+
+			.custom-selected{
+
+			}
+
+			#canvas .ui-resizable>.ui-resizable-handle{
+				pointer-events: none;
+				background: rgba(0,0,0,0.0);
+			}
+
+			#canvas .custom-selected.ui-resizable>.ui-resizable-handle{
+				pointer-events: auto;
+				background: rgba(0,0,0,0.5);
+			}
+
+
+			.dialog{display: none;} /*hide dialog markup*/
+
+
+
+			/*JQUERY UI Modifacations, makes handles inkscape-style*/
+			#canvas .ui-selected { background: #F39814; color: white; }
+
+
+			#canvas .ui-resizable-handle{width:8px !important; height: 8px !important;} /*all handles*/
+
+			#canvas  .ui-resizable-n{left: calc(50% - 4px); top:-5px}
+			#canvas  .ui-resizable-e{right:-5px; top:calc(50% - 4px)}
+			#canvas  .ui-resizable-s{left:calc(50% - 4px); bottom:-5px}
+			#canvas .ui-resizable-w{left:-5px; top:calc(50% - 4px)}
+			#canvas .ui-resizable-ne{right:-5px;top:-5px}
+			#canvas .ui-resizable-se{right:-5px;bottom: -5px;}
+			#canvas .ui-resizable-sw{left:-5px; bottom:-5px;}
+			#canvas .ui-resizable-nw{left:-5px; top:-5px;}
+
+			.drop-hover{
+				outline:2px solid rgba(0,0,0,0.3);
+			}
