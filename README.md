@@ -3,6 +3,8 @@ quickMockup is a simple tool for creating simple mockups of Interfaces and Websi
 
 It is HTML based and javascript-enhanced.
 
+![Screenshot](http://i.imgur.com/D4B3ggc.png)
+
 ## Usecase 
 
 The tool is meant to allow to quickly create mockups of interfaces in order to communicate ideas. 

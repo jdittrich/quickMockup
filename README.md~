@@ -20,8 +20,6 @@ HTML based and javascript-enhanced, means that the functions rely on manipulatin
 
 This has the advantage of keeping things simple. It means also that I needed to go with what works well already.
 
-
-
 ## Create own interface Elements
 
 Interface Elements (a custom button or so) can be created in HTML and CSS.
