@@ -33,6 +33,11 @@ Interface Elements (a custom button or so) can be created in HTML and CSS.
 
 See the source code for now, there are instructions in a comment in the html at the beginning of the code for the element list.
 
+## License
+
+MIT License; Used Libraries may have other licenses – see below
+
+
 ## Used Libraries
 
 Library  | Creator |License | Origin
