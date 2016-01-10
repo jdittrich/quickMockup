@@ -1,4 +1,4 @@
-
+/* LICENSE: © Jan Dittrich & Contributors, 2015, MIT License (See LICENSE.md) */
 
 body{
 			overflow: hidden;
@@ -11,13 +11,7 @@ body{
 			width: 50px;
 			height: 50px;
 		}
-/*
-			.bigmockElement{
-				width: 100px;
-				height: 100px;
-				position: absolute;
-				background: #a29eb2;
-			}*/
+
 
 			#appContainer{
 			margin: 0px;

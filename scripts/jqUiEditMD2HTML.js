@@ -1,3 +1,6 @@
+// LICENSE: © Jan Dittrich & Contributors, 2015, MIT License (See LICENSE.md)
+//This is a jqueryUI plugin for editing the HTML-element’s  text.
+
 
 
 (function($){

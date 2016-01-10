@@ -1,4 +1,7 @@
-//helpful: https://jsfiddle.net/t6f9yz7y/
+// LICENSE: © Jan Dittrich & Contributors, 2015, MIT License (See LICENSE.md)
+// This is a showdown extension which enables adding Checkboxes  – [ ] and [x] – and Radiobuttons – ( ) and (x) – to your markdown. 
+
+//was helpful: https://jsfiddle.net/t6f9yz7y/
 
 showdown.extension('mdui', function() {
 		'use strict';
