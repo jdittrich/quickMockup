@@ -91,9 +91,41 @@ DONE:
 				justify-content: center;
 				align-items: center;
 				display: flex;
+
+				border:2px solid #333;
+				border-radius:3px;
+				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				background-white;
+				width: 8em;
+				height:3em;
 			}
 
 			/*Window*/
+			.newMockElement.dialogWindow, .mockElement.dialogWindow{
+				border:2px solid gray;
+				border-radius:3px;
+				width: 400px;
+				height:200px;
+			}
+
+			.newMockElement.dialogWindow > .dialogWindow-bar, .mockElement.dialogWindow > .dialogWindow-bar{
+				background-color:silver;
+				border-bottom: 2px solid #333;
+				border-radius: 3px;
+				padding:7px;
+				height:1.6em;
+			}
+
+			.newMockElement.dialogWindow > div > .dialogWindow-closeButton, .mockElement.dialogWindow > div > .dialogWindow-closeButton{
+				padding:4px;
+				font-size:1.5em;
+				margin-top: -0.4em;
+				float:right;
+			}
+			newMockElement.dialogWindow > div > editableArea, .mockElement.dialogWindow > div > editableArea{
+				float:left;
+				padding:4px;
+			}
 
 
 			/*tabs*/
@@ -275,7 +307,7 @@ DONE:
 			/*entries vertical*/
 			.newMockElement.entries-horizontal, .mockElement.entries-horizontal{
 				background: rgba(0,0,0,0);
-				width:30em;
+				width:15em;
 			}
 
 			.newMockElement.entries-horizontal .editableArea, .mockElement.entries-horizontal .editableArea{
@@ -338,7 +370,7 @@ DONE:
 			.newMockElement.entries-vertical ul li, .mockElement.entries-vertical ul li{
 				margin: 0px;
 				font-family: "Comic Sans MS","Comic Sans",cursive;
-				width: 99%;
+				width: 150px;
 				padding: 0.2em;
 				flex: 1 1 100%;
 				display: flex;
@@ -358,7 +390,7 @@ DONE:
 			/*boxes vertical*/
 			.newMockElement.boxes-horizontal, .mockElement.boxes-horizontal{
 				background: rgba(0,0,0,0);
-				width:30em;
+				width:15em;
 			}
 
 			.newMockElement.boxes-horizontal .editableArea, .mockElement.boxes-horizontal .editableArea{
@@ -397,7 +429,7 @@ DONE:
 			/*boxes vertical*/
 			.newMockElement.boxes-vertical, .mockElement.boxes-vertical{
 				background: rgba(0,0,0,0);
-				width:30em;
+				width:10em;
 			}
 
 			.newMockElement.boxes-vertical .editableArea, .mockElement.boxes-vertical .editableArea{
@@ -521,38 +553,15 @@ DONE:
 				-->
 
 				<li>
-					<div class="newMockElement" style="
-						justify-content: center;
-						align-items: center;
-						display: flex;
-						border:2px solid #333;
-						border-radius:3px;
-						font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-						background-white;
-						width: 8em;
-						height:3em;
-						"  data-editable-content="OK" data-editable-mode="plain">
+					<div data-editable-content="OK" data-editable-mode="plain">
 						<span class="editableArea">OK</span>
 					</div>
 				</li>
 				<li><!-- Dialog Window -->
-					<div class="newMockElement dialogWindow" data-editable-content="myWindow" data-editable-mode="plain"
-					style="
-						border:2px solid gray;
-						border-radius:3px;
-						width: 400px;
-						height:200px;
-						font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-						">
-						<div style="
-							background-color:silver;
-							border-bottom: 2px solid #333;
-							border-radius: 3px;
-							padding:7px;
-							height:1.6em;
-						">
-							<span class="editableArea" style="float:left; padding:4px;" >Titel</span>
-							<span style="padding:4px; font-size:1.5em; margin-top: -0.4em; float:right;">×</span>
+					<div class="newMockElement dialogWindow" data-editable-content="myWindow" data-editable-mode="plain">
+						<div class="dialogWindow-bar" >
+							<span class="editableArea">Titel</span>
+							<span class="dialogWindow-closeButton">×</span>
 						</div>
 					</div>
 				</li>
@@ -650,41 +659,45 @@ Paragraph
 					</div>
 				</li>
 				<li>
-					<div class="newMockElement entries-horizontal" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+					<div class="newMockElement entries-horizontal" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements">
 						<div class="editableArea" >
 							<ul>
 								<li>Entry1</li>
 								<li>Entry2</li>
+								<li>Entry3</li>
 							</ul>
 						</div>
 					</div>
 				</li>
 				<li>
-					<div class="newMockElement entries-vertical" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+					<div class="newMockElement entries-vertical" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements">
 						<div class="editableArea" >
 							<ul>
 								<li>Entry1</li>
 								<li>Entry2</li>
+								<li>Entry3</li>
 							</ul>
 						</div>
 					</div>
 				</li>
 				<li>
-					<div class="newMockElement boxes-horizontal" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+					<div class="newMockElement boxes-horizontal" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements">
 						<div class="editableArea" >
 							<ul>
 								<li>Entry1</li>
 								<li>Entry2</li>
+								<li>Entry3</li>
 							</ul>
 						</div>
 					</div>
 				</li>
 				<li>
-					<div class="newMockElement boxes-vertical" data-editable-content="entry1;entry2;*entry3" data-editable-mode="uielements">
+					<div class="newMockElement boxes-vertical" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements">
 						<div class="editableArea" >
 							<ul>
 								<li>Entry1</li>
 								<li>Entry2</li>
+								<li>Entry3</li>
 							</ul>
 						</div>
 					</div>
