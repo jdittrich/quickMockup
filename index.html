@@ -939,6 +939,7 @@ $(function(){
 		///setup toolbar-delete button
 		$("#toolbar .delete-element-button").click(deleteElement); //delete button
 		Mousetrap.bind('del', function() { deleteElement()}); //keyboard shortcut
+		Mousetrap.bind('backspace', function() { deleteElement() });
 
 
 		$("#toolbar .change-canvasize-button").click(function(){
