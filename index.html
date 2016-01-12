@@ -1,28 +1,6 @@
-<!--
-TODO:
-* Meta-Element: Sticky Arrow
-* Put styles of early elements (button , window etc.) into stylesheet instead of inline
-* clear seperation of interactive and non interactive elements. GUI should be hidden in markup but made visible when external javascript is present. Thus: gui Javascript can go to a file.
-Thus: element CSS and essential displaying stuff-css must remain in the file.
-
-DONE:
-* löschen
-* Rudmentäres Editieren
-* Drag/Drop schachteln
-* Drag Drop
-* Resize
-* set up simple, universal markup that helps to style tables etc. via markdown
-* meaningful positioning of the text-edit element via pos. absolute
-* Change canvas size
-* activate/Deactivate markdown parsing for each element type (when markdown, server textarea, otherwise simple input): Simple parsing now activated via editableContent-plaintext to the editableArea
-* Meta Elements: Note (shrinkwrapping/scrolling Text)
-
---->
-
+<!DOCTYPE html>
 <!-- LICENSE: © Jan Dittrich & Contributors, 2015, MIT License (See LICENSE.md) -->
 
-
-<!DOCTYPE html>
 <html>
 
 <head>
@@ -600,25 +578,37 @@ Paragraph
 				</li>
 				<li>
 				<div class="newMockElement table" data-editable-content="
-		| h1    |    h2   |      h3 |
-		|:------|:-------:|--------:|
-		| 100   | [a][1]  | ![b][2] |
-		| *foo* | **bar** | ~~baz~~ |
+| h1    | h2      |      h3 |
+|:------|:-------:|--------:|
+| lorem | ipsum   | dolor   |
+| first | second  | third   |
 					">
+					<!-- --> 
 					<div class="editableArea">
-						<table><thead>
+						<table>
+						<thead>
 						<tr>
 						<th style="text-align:left;">h1</th>
 						<th style="text-align:center;">h2</th>
+						<th style="text-align:right;">h3</th>
 						</tr>
 						</thead>
 
 						<tbody>
 						<tr>
-						<td style="text-align:left;">100</td>
-						<td style="text-align:center;">[a][1]</td>
+						<td style="text-align:left;">lorem</td>
+						<td style="text-align:center;">ipsum</td>
+						<td style="text-align:right;">dolor</td>
 						</tr>
-						</tbody></table>
+
+						<tr>
+						<td style="text-align:left;">first</td>
+						<td style="text-align:center;">second</td>
+						<td style="text-align:right;">third</td>
+						</tr>
+
+						</tbody>
+						</table>
 					</div>
 			</div>
 				</li>
