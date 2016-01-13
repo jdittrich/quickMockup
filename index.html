@@ -197,11 +197,26 @@
 			}
 
 			.newMockElement.optionRadiobutton .editableArea li::before, .mockElement.optionRadiobutton .editableArea li::before{
-				content:"○ "
+				/*implements a simulated radio button, since uiconde circles and the "fisheye" character were inconsisted in size*/
+				content: " ";
+				display: inline-block;
+				background: white;
+				width: 0.8em;
+				height: 0.8em;
+				position: relative;
+				top: 0.1em;
+				margin: 0 0.3em 0 0;
+				padding: 0;
+				border-radius: 10em;
+				border: 2px inset gray;
+				box-sizing: border-box;
 			}
 
 			.newMockElement.optionRadiobutton .editableArea li.item-highlighted::before, .mockElement.optionRadiobutton .editableArea li.item-highlighted::before{
-				content:"◉ "
+				content: "";
+				background: black;
+				background-clip: content-box;
+				padding: 0.1em;
 			}
 
 			/*Checkboxes*/
@@ -531,7 +546,7 @@
 				-->
 
 				<li>
-					<div data-editable-content="OK" data-editable-mode="plain">
+					<div class="newMockElement button" data-editable-content="OK" data-editable-mode="plain">
 						<span class="editableArea">OK</span>
 					</div>
 				</li>
@@ -583,7 +598,7 @@ Paragraph
 | lorem | ipsum   | dolor   |
 | first | second  | third   |
 					">
-					<!-- --> 
+					<!-- -->
 					<div class="editableArea">
 						<table>
 						<thead>
