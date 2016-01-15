@@ -21,7 +21,7 @@ The target group for now are interaction/interface *designers* or design-aware *
 
 You can just save the webpage with your browsers save function (e.g. see [here for Firefox](https://support.mozilla.org/en-US/kb/how-save-web-page)) . In the dropdown in the saving dialog, you can select something like »complete webpage« and »only HTML«. 
 
-* If you save the »complete webpage« , you retain interactivity (you could zip the files, send it to someone and that person cpuld just continue working) . 
+* If you save the »complete webpage« , you retain interactivity (you could zip the files, send it to someone and that person could just continue working) . 
 * If you save »only HTML«, you still save a file containing your mockup wich you can view in any browser.
  
 You can also just do a screenshot (in case it is more a throw-away mock anyway) using whichever tool you like.
