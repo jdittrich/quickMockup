@@ -490,9 +490,6 @@
 	position:absolute
 		}
 
-
-
-
 		.newMockElement.note .editableArea, .mockElement.note .editableArea{
 			padding:0.5em;
 		}
@@ -764,8 +761,9 @@ Elements are grouped by dragging one element on/in another. Grouped elements mov
 	</div>
 
 	<div id="toolbar">
-		<button class="delete-element-button">Delete Element</button>
-		<button class="change-canvasize-button">Change Canvas Size</button>
+		<button class="delete-element-button" title="deletes the currently selected element">Delete Element</button>
+		<button class="undelete-element-button" title="undeletes most recently deleted element">↶</button>
+		<button class="change-canvasize-button" title="change size of the area you place elements on">Change Canvas Size</button>
 	</div>
 
 	<div id="changeCanvasSizeDialog" class="dialog">
@@ -870,13 +868,49 @@ $(function(){
 
 	}
 
-	var deleteElement = function(){
+/*	var deleteElement = function(){
 		var canvasSelector = "body";
 		var element2BDeletedSelector = ".custom-selected";
 		$canvas = $(canvasSelector);
 
-		$canvas.find(element2BDeletedSelector).remove();
+		$canvas.find(element2BDeletedSelector).detach();
 	}
+
+	var undeleteElement function(){
+	//reference to former parent
+	//reference to element
+	//reattach to parent
+
+	//or better: but in revealing module; have .delete .undelete
+	}*/
+
+	var deleteElement=(function(){ //revealing module pattern
+		var recentlyDeleted = { //hope saving these does not cause memory leaks. FUD.
+			$element:null,
+			$formerParent:null
+		}
+		var canvasSelector = "body";
+		var element2BDeletedSelector = ".custom-selected";
+		console.log("init deleteElement")
+		return{
+			delete:function(){
+				$canvas = $(canvasSelector);
+				$element2BDeleted = $canvas.find(element2BDeletedSelector);
+
+				recentlyDeleted.$formerParent = $element2BDeleted.parent(); //remember parent for re-attachment on redo
+				recentlyDeleted.$element = $element2BDeleted.detach(); //delete element and store it  for re-attachment on redo
+				console.log("deleted", recentlyDeleted.$element)
+			},
+			undelete:function(){
+
+				if(!recentlyDeleted.$element || !recentlyDeleted.$formerParent ){
+					return
+				}
+
+				recentlyDeleted.$formerParent.append(recentlyDeleted.$element);
+			}
+		}
+	}())
 
 	var setupGUI = function(){
 		$("#changeCanvasSizeDialog").dialog({
@@ -928,9 +962,12 @@ $(function(){
 
 		//setup toolbar
 		///setup toolbar-delete button
-		$("#toolbar .delete-element-button").click(deleteElement); //delete button
-		Mousetrap.bind('del', function() { deleteElement()}); //keyboard shortcut
-		Mousetrap.bind('backspace', function() { deleteElement() });
+		$("#toolbar .delete-element-button").click(deleteElement.delete); //delete button
+		Mousetrap.bind('del',  deleteElement.delete); //keyboard shortcut
+		Mousetrap.bind('backspace', deleteElement.delete);
+
+		$("#toolbar .undelete-element-button").click(deleteElement.undelete);
+
 
 
 		$("#toolbar .change-canvasize-button").click(function(){
