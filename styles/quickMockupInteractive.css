@@ -58,8 +58,14 @@ body{
 				border-bottom:1px solid silver;
 				overflow: hidden;
 				width: 100%;
-
 			}
+
+			#widgetCollection>li>.newMockElement:hover{
+				outline:2px solid rgba(148, 216, 24,0.5);
+			}
+
+
+
 
 			#toolbar{
 				display: block; /*not displayed in the html-files style*/
