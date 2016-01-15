@@ -972,7 +972,7 @@ $(function(){
 
 
 		$("#toolbar .undelete-element-button").click(deleteElement.undelete);
-
+		Mousetrap.bind(['ctrl+z'],deleteElement.undelete);
 
 
 		$("#toolbar .change-canvasize-button").click(function(){
