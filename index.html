@@ -963,8 +963,13 @@ $(function(){
 		//setup toolbar
 		///setup toolbar-delete button
 		$("#toolbar .delete-element-button").click(deleteElement.delete); //delete button
-		Mousetrap.bind('del',  deleteElement.delete); //keyboard shortcut
-		Mousetrap.bind('backspace', deleteElement.delete);
+		Mousetrap.bind(['del','backspace'],function(e){
+			if (e.preventDefault) {
+				e.preventDefault();
+		}
+			deleteElement.delete();
+		}); //keyboard shortcut
+
 
 		$("#toolbar .undelete-element-button").click(deleteElement.undelete);
 
