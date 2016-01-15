@@ -65,18 +65,27 @@
 
 			/*if(this.element.find(".editableArea").first().hasClass("editableContent-plaintext")){*/
 			if(this.editType === 'plain'){
-				this.inputElement = $('<input type="text">',{
+				this.inputElement = $('<input>',{
+				type:"text",
 				class:"plaintextinput",
-			});}else{
+				title:"plain text entry"
+			});} else if (this.editType === 'uielements'){
+				this.inputElement = $('<input>',{
+				type:"text",
+				class:"uielementsinput",
+				title:"Example: Item; 2nd Item; * I'm highlighted via ›*‹ at begin"
+			});} else {
 				this.inputElement = $('<textarea>',{
 				class:"markdowninput",
+				title:"Markdown: **bold**, *italic* etc. + ( ) for radio, [ ] for checkboxes"
 			});
 			}
 
 			this.inputElement.css({
 				position:"absolute",
 				top:parseInt(editablePosition.top)+"px",
-				left:parseInt(editablePosition.left)+"px"
+				left:parseInt(editablePosition.left)+"px",
+				width:parseInt(this.$editableElement.width())
 			});
 
 			this._on(this.inputElement,{"blur":this._leaveEditMode});

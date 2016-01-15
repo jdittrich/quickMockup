@@ -97,6 +97,10 @@ body{
 
 			.dialog{display: none;} /*hide dialog markup*/
 
+			.mockElement textarea{
+				height:8em;
+			}
+
 
 
 			/*JQUERY UI Modifacations, makes handles inkscape-style*/
