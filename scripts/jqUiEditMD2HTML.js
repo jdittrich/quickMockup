@@ -146,6 +146,9 @@
 		var highlightRegex = /^\s*\*/; //if this matches, the element around this text should be emphazied
 		var newString = "";
 		itemsArray.forEach(function(value, index, array){
+			if (value===""){
+				return false;
+			}
 			//if the string does start with an *
 			if(value.match(highlightRegex)!==null){
 				//... add the class "highlighted
