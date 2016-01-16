@@ -255,7 +255,34 @@
 
 
 			}
+			/*slider*/
+			.newMockElement.slider,
+			.mockElement.slider{
+				align-items: center;
+				display:flex;
+			}
 
+			.newMockElement.slider:before,
+			.mockElement.slider::before{
+
+
+				content:" ";
+				height:0.5em;
+				width:0.5em;
+				background: white;
+				border: 3px solid #333;
+				border-radius: 10em;
+				position: relative;
+				left:3em;
+			}
+
+			.newMockElement.slider:after,
+			.mockElement.slider::after{
+				content:" ";
+				height: 2px;
+				background: #222;
+				width:100%;
+			}
 			/*loading indicator*/
 			.newMockElement.loadingIndicator,
 			.mockElement.loadingIndicator{
@@ -445,6 +472,30 @@
 			.mockElement.boxes-vertical ul li.item-highlighted{
 				background: #DDD;
 			}
+
+			/*iconbar*/
+			.newMockElement.boxes-iconbar-horizontal ul>li, .mockElement.boxes-iconbar-horizontal ul>li{
+				border: 2px solid rgb(128, 128, 128);
+				display: flex;
+				justify-content: center;
+				font-size: 2em;
+				align-items: center;
+				border-radius: 3px;
+				color: rgb(51, 51, 51);
+				flex: 1 1 0%;
+				margin: 0.1em;
+				padding: 0.1em 0.1em 0.2em;
+			}
+
+		/*image placeholder*/
+		.newMockElement.imageplaceholder, .mockElement.imageplaceholder{
+			color:darkgray;
+			background-color: lightgray;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+		}
 
 		/*meta: note*/
 		.newMockElement.note, .mockElement.note{
@@ -639,6 +690,11 @@ Paragraph
 						<span class="editableArea">Dropdown Title</span><span class="mockelement-dropdown-arrow">▾</span>
 					</div>
 				</li>
+				<li title="slider element">
+					<div class="newMockElement slider" >
+						<span> </span>
+					</div>
+				</li>
 				<li>
 					<div class="newMockElement loadingIndicator" >
 						<div class="bar"></div>
@@ -686,6 +742,24 @@ Paragraph
 								<li>Entry2</li>
 								<li>Entry3</li>
 							</ul>
+						</div>
+					</div>
+				</li>
+
+				<li title="horizontal boxes for toolbars">
+					<div class="newMockElement boxes-horizontal boxes-iconbar-horizontal" data-editable-content="☰;⌂;⚑; ⚙; ✂;✐;✔;✘;↶;↷;◂;▸; ▴;▾" data-editable-mode="uielements">
+						<div class="editableArea" >
+							<ul>
+								<li>☰</li><li>⌂</li><li>⚑</li><li> ⚙</li><li> ✂</li><li>✐</li><li>✔</li><li>✘</li><li>↶</li><li>↷</li><li>◂</li><li>▸</li><li> ▴</li><li>▾</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+
+				<li title="image placeholder">
+					<div class="newMockElement imageplaceholder" data-editable-content="Image" data-editable-mode="plain">
+						<div class="editableArea" >
+						Image
 						</div>
 					</div>
 				</li>
