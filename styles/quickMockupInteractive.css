@@ -60,6 +60,11 @@ body{
 				width: 100%;
 			}
 
+			#widgetCollection>li:hover{
+				margin-left: -3px;
+
+			}
+
 			#widgetCollection>li>.newMockElement:hover{
 				outline:2px solid rgba(148, 216, 24,0.5);
 			}
