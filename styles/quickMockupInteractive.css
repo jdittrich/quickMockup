@@ -1,15 +1,11 @@
 /* LICENSE: © Jan Dittrich & Contributors, 2015, MIT License (See LICENSE.md) */
 
-body{
+		body{
 			overflow: hidden;
 		}
 
-
-
-
 		.newMockElement{
 			width: 50px;
-			height: 50px;
 		}
 
 
@@ -54,10 +50,15 @@ body{
 
 			#widgetCollection>li{
 				list-style-type: none;
-				padding: 0.5em;
+				padding: 1em;
 				border-bottom:1px solid silver;
 				overflow: hidden;
 				width: 100%;
+			}
+
+			#widgetCollection>li:hover{
+				margin-left: -3px;
+
 			}
 
 			#widgetCollection>li>.newMockElement:hover{
@@ -68,22 +69,31 @@ body{
 
 
 			#toolbar{
-				display: block; /*not displayed in the html-files style*/
-				position:fixed;
-				top:0;
-				right:0;
+				padding: 0em;
+				margin-top: 0px;
 				margin-right: 20px;
-				margin-top: 5px;
+				right: 0px;
+				top: 0px;
+				position: fixed;
+				display: flex;
 			}
 
 			#toolbar button{
-				display: inline-block;
-				opacity: 0.5;
 				z-index: 9999;
+				padding: 0.2em;
+				box-shadow: -2px -2px 2px rgba(0, 0, 0, 0.1) inset;
+				background: rgb(250, 250, 250) none repeat scroll 0% 0%;
+				height: 2em;
+				border: 1px solid rgb(169, 169, 169);
+				border-radius: 1px;
+				margin-top: 3px;
+				margin-right: 0.2em;
 			}
 
-			#toolbar:hover button{
-				opacity: 1;
+			#toolbar button:hover{
+				box-shadow: -1px -1px 1px rgba(0, 0, 0, 0.05) inset;
+				background:#EEE;
+
 			}
 
 			.custom-selected{
