@@ -54,6 +54,7 @@
 			.newMockElement, .mockElement{
 				box-sizing: border-box;
 				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				position: relative;
 			}
 			.newMockElement > div.editableArea, .mockElement > div.editableArea{
 				width: 100%;
@@ -69,13 +70,13 @@
 				justify-content: center;
 				align-items: center;
 				display: flex;
-
 				border:2px solid #333;
 				border-radius:3px;
-				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-				background-white;
+				background:white;
+				width: 8em;
 				width: 8em;
 				height:3em;
+				box-shadow: 2px 2px rgba(0, 0, 0, 0.5);
 			}
 
 			/*Window*/
@@ -255,6 +256,49 @@
 
 
 			}
+			/*spinner*/
+			.newMockElement.spinner, .mockElement.spinner{
+			border:2px solid gray;
+			justify-content: center;
+			align-items: center;
+			display: flex;
+			border:2px solid #333;
+			}
+
+			.newMockElement.spinner::before, .mockElement.spinner::before{
+
+content: "▴";
+position: absolute;
+display: flex;
+justify-content: center;
+align-items: center;
+right: 0;
+top: 0;
+width: 1.5em;
+height: 50%;
+background: lightgray;
+font-size: 0.7em;
+
+			}
+
+			.newMockElement.spinner::after, .mockElement.spinner::after{
+			content:"▾";
+			position: absolute;
+			display: flex;
+			justify-content: center;
+align-items: center;
+			right: 0px;
+			bottom: 0px;
+			width: 1.5em;
+			height: 50%;
+			background: lightgray ;
+			font-size: 0.7em;
+			box-sizing: border-box;
+			padding-bottom: 0.2em;
+			border-top: 1px solid gray;
+			}
+
+
 			/*slider*/
 			.newMockElement.slider,
 			.mockElement.slider{
@@ -474,17 +518,22 @@
 			}
 
 			/*iconbar*/
+
+
 			.newMockElement.boxes-iconbar-horizontal ul>li, .mockElement.boxes-iconbar-horizontal ul>li{
 				border: 2px solid rgb(128, 128, 128);
 				display: flex;
 				justify-content: center;
-				font-size: 2em;
+				font-size: 1.7em;
 				align-items: center;
 				border-radius: 3px;
 				color: rgb(51, 51, 51);
 				flex: 1 1 0%;
 				margin: 0.1em;
 				padding: 0.1em 0.1em 0.2em;
+			}
+			.newMockElement.boxes-iconbar-horizontal ul>li{
+			min-width: 1em;
 			}
 
 		/*image placeholder*/
@@ -495,6 +544,7 @@
 			justify-content: center;
 			align-items: center;
 			text-align: center;
+			height:5em;
 		}
 
 		/*meta: note*/
@@ -688,6 +738,11 @@ Paragraph
 				<li title="dropdown element">
 					<div class="newMockElement dropdownList" data-editable-content="DropdownTitle"  data-editable-mode="plain">
 						<span class="editableArea">Dropdown Title</span><span class="mockelement-dropdown-arrow">▾</span>
+					</div>
+				</li>
+				<li title="spinner element">
+					<div class="newMockElement spinner" data-editable-content="10"  data-editable-mode="plain">
+						<span class="editableArea">10</span>
 					</div>
 				</li>
 				<li title="slider element">
