@@ -101,7 +101,7 @@
 				margin-top: -0.4em;
 				float:right;
 			}
-			newMockElement.dialogWindow > div > editableArea, .mockElement.dialogWindow > div > editableArea{
+			newMockElement.dialogWindow > div > .editableArea, .mockElement.dialogWindow > div > .editableArea{
 				float:left;
 				padding:4px;
 			}
@@ -148,6 +148,12 @@
 
 			.newMockElement.label .mockElement.label{
 				width:7em;
+			}
+
+			.newMockElement.link, .mockElement.link{
+				width:7em;
+				color:#0093ff;
+				text-decoration: underline;
 			}
 
 			/*headline*/
@@ -670,6 +676,11 @@ align-items: center;
 				<li title="Short text label">
 					<div class="newMockElement label" data-editable-content="label" data-editable-mode="plain">
 						<div class="editableArea">Label</div>
+					</div>
+				</li>
+				<li title="a link">
+					<div class="newMockElement link" data-editable-content="link" data-editable-mode="plain">
+						<div class="editableArea">Link</div>
 					</div>
 				</li>
 				<li>
