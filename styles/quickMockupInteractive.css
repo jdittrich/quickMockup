@@ -8,6 +8,10 @@
 			width: 50px;
 		}
 
+		.mockElement input.plaintextinput{ /*otherwise the input fields can be rather small*/
+				min-width:5em;
+				box-sizing: border-box;
+			}
 
 			#appContainer{
 			margin: 0px;
