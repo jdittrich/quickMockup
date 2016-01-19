@@ -277,9 +277,18 @@
 
 
 			}
+			/*input Box*/
+			.newMockElement.inputbox, .mockElement.inputbox{
+			border:2px solid darkgray;
+			align-items: center;
+			display: flex;
+			border:2px solid #333;
+			padding-left:0.4em;
+			}
+
 			/*spinner*/
 			.newMockElement.spinner, .mockElement.spinner{
-			border:2px solid gray;
+			border:2px solid darkgray;
 			justify-content: center;
 			align-items: center;
 			display: flex;
@@ -762,6 +771,11 @@ Paragraph
 				<li title="dropdown element">
 					<div class="newMockElement dropdownList" data-editable-content="DropdownTitle"  data-editable-mode="plain">
 						<span class="editableArea">Dropdown Title</span><span class="mockelement-dropdown-arrow">▾</span>
+					</div>
+				</li>
+				<li title="inputbox element">
+					<div class="newMockElement inputbox" data-editable-content="Text here!"  data-editable-mode="plain">
+						<span class="editableArea">Text here!</span>
 					</div>
 				</li>
 				<li title="spinner element">
