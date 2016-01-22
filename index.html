@@ -54,15 +54,21 @@
 				box-sizing: border-box;
 				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 				position: relative;
+				width:150px; /*if not specifies otherwise*/
 			}
 			.newMockElement > div.editableArea, .mockElement > div.editableArea{
 				width: 100%;
 				box-sizing: border-box;
 			}
 
-			.newMockElement, .mockElement{
-				width:150px; /*if not specifies otherwise*/
+			.newMockElement a, .mockElement a{
+				color: #0093ff;
+				pointer-events: none; /*otherwise, links in elements, markdown etc. can be clicked and lead away from the app.*/
 			}
+			.newMockElement a, .mockElement a:visited{
+				color: #0093ff /*no visted state for mockup links*/
+			}
+
 
 			/*buttons*/
 			.newMockElement.button, .mockElement.button{
