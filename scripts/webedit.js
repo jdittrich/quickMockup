@@ -108,7 +108,6 @@ $(function(){
 
 				recentlyDeleted.$formerParent = $element2BDeleted.parent(); //remember parent for re-attachment on redo
 				recentlyDeleted.$element = $element2BDeleted.detach(); //delete element and store it  for re-attachment on redo
-				console.log("deleted", recentlyDeleted.$element)
 			},
 			undelete:function(){
 
@@ -232,7 +231,7 @@ $(function(){
 							);
 						}).
 						html();
-					console.log(htmlString)
+
 
 				var cssString = cssSource
 					.html();
@@ -253,7 +252,7 @@ $(function(){
 			'</form>';
 
 				$(form).appendTo("body")
-				$(form).submit();
+				$("#sendToCodepen").submit(); //$(form).submit fails in firefox
 		});
 
 
