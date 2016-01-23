@@ -204,53 +204,56 @@ $(function(){
 			return "do you want to close the application? Unsaved changes will be lost (use your browsers save function for saving)"
 		};
 
-		$("<button>to Codepen</button>").appendTo("#toolbar").click(function(){
-		var htmlSource = $("#canvasWrap"),
-			cssSource = $("#elementStyles"),
-			cleanThese=".ui-resizable-handle";
+		$("<button>to Codepen</button>").
+			appendTo("#toolbar").
+			click(function(){
+				var htmlSource = $("#canvasWrap"),
+					cssSource = $("#elementStyles"),
+					cleanThese=".ui-resizable-handle";
 
-		//if there is already a send-to-codepen-form, delete it
-		$("form#sendToCodepen").remove();
+				//if there is already a send-to-codepen-form, delete it
+				$("form#sendToCodepen").remove();
 
-		var htmlString = htmlSource.
-			clone(). //for coming manipulations, so we don't actually change the original
-			find(".ui-resizable-handle"). //find handles...
-			remove(). //remove them (not useful when displaying)
-			end(). //go out of the matched handles (via find) the the previous set (all in htmlSource)
-			find("*").//every element
-			each(function(index,element){
-				$(element).
-				contents(). //all subnodes of this element, including Text nodes
-				filter(function() {
-					return this.nodeType === 3; //filter for text nodes
-				}).each(function(index,element){ //for each text node
-					var oldtext = element.nodeValue;
-					element.nodeValue= oldtext.replace(/"/g, "&Prime;").replace(/'/g, "&prime;"); //replace all " by hour sign entity, all ' by minute sign entity. Why not their respective entities (the ones used here only look similar)? They will be replaced later by another function and seemingly these signs mess up the validity of the html, since once they are stringified, there is no distinction between markup chars and text-content chars anymore.
-				});
-			}).
-			html();
-			console.log(htmlString)
+				var htmlString = htmlSource.
+					clone(). //for coming manipulations, so we don't actually change the original
+					find(".ui-resizable-handle"). //find handles...
+					remove(). //remove them (not useful when displaying)
+					end(). //go out of the matched handles (via find) the the previous set (all in htmlSource)
+					find("*").//every element
+					each(function(index,element){
+							var oldString = $(element).attr("data-editable-content") || "";
 
-		var cssString = cssSource
-			.html();
+						//replace all ' and " by similar looking characters. //They can't be replaced by their actual html entities
+						//since they have particular meaning (determine strings)
+						//and thus mess up the syntax, since they would be replaced with the same chars like the characters that are actualy used to determine strings.
+							$(element).attr(
+								"data-editable-content",
+								oldString.replace(/"/g, "&Prime;").replace(/'/g, "&prime;")
+							);
+						}).
+						html();
+					console.log(htmlString)
 
-		var data={
-			html:htmlString,
-			css:cssString,
-			js:""
-		}
+				var cssString = cssSource
+					.html();
 
-		var jsonstring = JSON.stringify(data).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+				var data={
+					html:htmlString,
+					css:cssString,
+					js:""
+				}
 
-		var form =
-	'<form id="sendToCodepen" action="http://codepen.io/pen/define" method="POST" target="_blank" style="position:fixed; top:0;left:0;">' +
-		'<input type="hidden" name="data" value=\'' +
-			jsonstring +
-			'\'>' +
-		'<input type="image" src="http://s.cdpn.io/3/cp-arrow-right.svg" width="40" height="40" value="Create New Pen with Prefilled Data" class="codepen-mover-button">' +
-	'</form>';
+				var jsonstring = JSON.stringify(data).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 
-			$(form).appendTo("body")
+				var form =
+			'<form id="sendToCodepen" action="http://codepen.io/pen/define" method="POST" target="_blank" style="display:none;">' +
+				'<input type="hidden" name="data" value=\'' +
+					jsonstring +
+					'\'>' +
+			'</form>';
+
+				$(form).appendTo("body")
+				$(form).submit();
 		});
 
 
