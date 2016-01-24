@@ -92,51 +92,38 @@ $(function(){
 
 	}
 
-/*	var deleteElement = function(){
-		var canvasSelector = "body";
-		var element2BDeletedSelector = ".custom-selected";
-		$canvas = $(canvasSelector);
-
-		$canvas.find(element2BDeletedSelector).detach();
-	}
-
-	var undeleteElement function(){
-	//reference to former parent
-	//reference to element
-	//reattach to parent
-
-	//or better: but in revealing module; have .delete .undelete
-	}*/
 
 	var deleteElement=(function(){ //revealing module pattern
 		var recentlyDeleted = { //hope saving these does not cause memory leaks. FUD.
 			$element:null,
 			$formerParent:null
-		}
+		};
 		var canvasSelector = "body";
 		var element2BDeletedSelector = ".custom-selected";
-		console.log("init deleteElement")
+
 		return{
 			delete:function(){
-				$canvas = $(canvasSelector);
-				$element2BDeleted = $canvas.find(element2BDeletedSelector);
+				var $canvas = $(canvasSelector);
+				var $element2BDeleted = $canvas.find(element2BDeletedSelector);
 
 				recentlyDeleted.$formerParent = $element2BDeleted.parent(); //remember parent for re-attachment on redo
 				recentlyDeleted.$element = $element2BDeleted.detach(); //delete element and store it  for re-attachment on redo
-				console.log("deleted", recentlyDeleted.$element)
 			},
 			undelete:function(){
 
 				if(!recentlyDeleted.$element || !recentlyDeleted.$formerParent ){
-					return
+					return;
 				}
 
 				recentlyDeleted.$formerParent.append(recentlyDeleted.$element);
 			}
-		}
-	}())
+		};
+	}());
 
-	var setupGUI = function(){
+
+(function(){ //setup the gui
+
+		/*a dialog to change the canvas size. Maybe a bit over the top to use jqui for that.*/
 		$("#changeCanvasSizeDialog").dialog({
 			autoOpen:false,
 			open: function( event, ui ) {
@@ -215,9 +202,63 @@ $(function(){
 		window.onbeforeunload = function(){
 			return "do you want to close the application? Unsaved changes will be lost (use your browsers save function for saving)"
 		};
-	};
 
-	setupGUI();
+		$("<button>↗ to Codepen</button>").
+			appendTo("#toolbar").
+			click(function(){
+				var htmlSource = $("#canvasWrap"),
+					cssSource = $("#elementStyles"),
+					cleanThese=".ui-resizable-handle";
+
+				//if there is already a send-to-codepen-form, delete it
+				$("form#sendToCodepen").remove();
+
+				var htmlString = htmlSource.
+					clone(). //for coming manipulations, so we don't actually change the original
+					find(".ui-resizable-handle"). //find handles...
+					remove(). //remove them (not useful when displaying)
+					end(). //go out of the matched handles (via find) the the previous set (all in htmlSource)
+					find("*").//every element
+					each(function(index,element){
+							var oldString = $(element).attr("data-editable-content") || "";
+
+						//replace all ' and " by similar looking characters. //They can't be replaced by their actual html entities
+						//since they have particular meaning (determine strings)
+						//and thus mess up the syntax, since they would be replaced with the same chars like the characters that are actualy used to determine strings.
+							$(element).attr(
+								"data-editable-content",
+								oldString.replace(/"/g, "&Prime;").replace(/'/g, "&prime;")
+							);
+						}).
+						html();
+
+
+				var cssString = cssSource
+					.html();
+
+				var data={
+					html:htmlString,
+					css:cssString,
+					js:""
+				}
+
+				var jsonstring = JSON.stringify(data).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+
+				var form =
+			'<form id="sendToCodepen" action="http://codepen.io/pen/define" method="POST" target="_blank" style="display:none;">' +
+				'<input type="hidden" name="data" value=\'' +
+					jsonstring +
+					'\'>' +
+			'</form>';
+
+				$(form).appendTo("body")
+				$("#sendToCodepen").submit(); //$(form).submit fails in firefox
+		});
+
+
+
+	})();//setupgui end
+
 
 	//setup elements already on the page
 	$(".mockElement").each(function(index, element){
