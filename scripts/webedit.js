@@ -203,7 +203,7 @@ $(function(){
 			return "do you want to close the application? Unsaved changes will be lost (use your browsers save function for saving)"
 		};
 
-		$("<button>↗ to Codepen</button>").
+		$('<button title="exports to codepen. »Save« on codepen to get a sharable URL">↗ to Codepen</button>').
 			appendTo("#toolbar").
 			click(function(){
 				var htmlSource = $("#canvasWrap"),
