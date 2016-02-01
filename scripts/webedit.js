@@ -1,6 +1,12 @@
 $(function(){
 	var makeMovableElement = function(element){
+		//in case it already has the handle-elements (markup was duplicated or saved and now reloaded...)
+		$(element).
+					find(".ui-resizable-handle"). //find handles...
+					remove(); //remove them (not useful when displaying)
 
+
+		//now, make it draggable.
 		$(element).draggable({
 			distance: 4,
 			disabled:false,
@@ -9,14 +15,14 @@ $(function(){
 		}).resizable({
 			handles:"all"
 		});
-	}
+	};
 
 	var setupElement = function(element){
 		makeMovableElement(element);
 		makeDropableElement(element);
 		$(element).editText();
 		makeSelectableElement(element,"#canvas");
-	}
+	};
 
 	var makeDropableElement= function(element){
 		$(element).droppable({
@@ -29,7 +35,7 @@ $(function(){
 			var elementToAppend = null;
 
 			if(ui.draggable.hasClass("newMockElement")){//if this is a new element
-				elementToAppend = ui.draggable.clone(false)
+				elementToAppend = ui.draggable.clone(false);
 				elementToAppend.removeClass("newMockElement");
 
 				elementToAppend.addClass("mockElement");
@@ -40,7 +46,7 @@ $(function(){
 				elementToAppend.attr("id","mockElement_"+idnr);
 				//TODO: assign an id "editableArea"+idnr
 
-				elementToAppend.find(".editableArea").first().attr("id","editableArea_"+idnr)
+				elementToAppend.find(".editableArea").first().attr("id","editableArea_"+idnr);
 
 				setupElement(elementToAppend);
 			}else{
@@ -56,7 +62,7 @@ $(function(){
 			elementToAppend.appendTo($(this)).css({top:newTop+"px", left:newLeft+"px"});
 			}
 		});//droppable End
-	}//droppableWrapper End
+	};//droppableWrapper End
 
 	var makeSelectableElement = function(element,selectorCanvasParam){
 		var $element = $(element);
@@ -64,7 +70,7 @@ $(function(){
 		var selectorCanvas = selectorCanvasParam ? selectorCanvasParam : "body"; //if selectorCanvas is defined, set it to a standard value
 
 		var selectedClassParam = "custom-selected";
-		var elementSelector = ".mockElement"
+		var elementSelector = ".mockElement";
 
 		var $canvas = $(selectorCanvas);
 
@@ -73,9 +79,9 @@ $(function(){
 			if(event.target=== $canvas[0]){
 				$canvas.find("." + selectedClassParam).removeClass(selectedClassParam);
 			}
-		})
+		});
 
-		//select the this element, deselect others
+		//select the this element, deselect others. This is inefficient when you apply the function in batch, but makes much sense, when initializing single elements (dragging them on canvas) without, a new element is deselected, and needs to be clicked again. Since the performance is o.k. for now, I leave it like it is.
 		$canvas.find("." + selectedClassParam).removeClass(selectedClassParam);
 		$element.addClass(selectedClassParam); /*custom selected, since there is a jQuery UI selected, that might be used later*/
 
@@ -90,8 +96,46 @@ $(function(){
 			}
 		});
 
-	}
+	};
 
+	var duplicateElement=function(){
+		var $canvas = $("body");
+		var $element2BDuplicated = $canvas.find(".custom-selected");
+
+		var clonedElement = $element2BDuplicated.clone(false); //clone all children too, don't clone events.
+
+
+		//some elements have id
+		var reassignID = function($element){
+			var oldId = $element.attr("id")||"";
+			var oldIdNr = oldId.match(/^mockElement_(\d+)/)[1]; //[1] to get the first capture group, , the id number.
+
+			if(oldId.length >0){ //if it actually had an Id
+				var newIdNr = parseInt(Math.random()*100000000000000);
+				$element.attr("id", "mockElement_"+newIdNr);
+				$element.find("#editableArea"+oldIdNr).attr("id", "editableArea_"+newIdNr);
+			}
+		};
+
+		clonedElement.find(".mockElement").each(function(index, element){
+			reassignID($(element));
+		});
+		reassignID($(clonedElement));
+
+		var originalElementPos = $element2BDuplicated.position();
+		clonedElement.css({
+			left:(originalElementPos.left+20)+"px",
+			top:(originalElementPos.top+20)+"px"
+		});
+		clonedElement.removeClass("custom-selected");
+		clonedElement.appendTo($element2BDuplicated.parent());
+
+		clonedElement.find(".mockElement").each(function(index, element){
+			setupElement(element);
+		});
+		setupElement(clonedElement);
+
+	};
 
 	var deleteElement=(function(){ //revealing module pattern
 		var recentlyDeleted = { //hope saving these does not cause memory leaks. FUD.
@@ -185,6 +229,13 @@ $(function(){
 		$("#toolbar .undelete-element-button").click(deleteElement.undelete);
 		Mousetrap.bind(['ctrl+z','command+z'],deleteElement.undelete);
 
+		$("#toolbar .duplicate-element-button").click(duplicateElement);
+		Mousetrap.bind(['ctrl+d','command+d'],function(e){
+			if (e.preventDefault) {
+				e.preventDefault();
+			}
+			duplicateElement();
+		});
 
 		$("#toolbar .change-canvasize-button").click(function(){
 			$("#changeCanvasSizeDialog").dialog("open");
@@ -203,12 +254,11 @@ $(function(){
 			return "do you want to close the application? Unsaved changes will be lost (use your browsers save function for saving)"
 		};
 
-		$("<button>↗ to Codepen</button>").
+		$('<button title="exports to codepen. »Save« on codepen to get a sharable URL">↗ to Codepen</button>').
 			appendTo("#toolbar").
 			click(function(){
 				var htmlSource = $("#canvasWrap"),
-					cssSource = $("#elementStyles"),
-					cleanThese=".ui-resizable-handle";
+					cssSource = $("#elementStyles");
 
 				//if there is already a send-to-codepen-form, delete it
 				$("form#sendToCodepen").remove();
