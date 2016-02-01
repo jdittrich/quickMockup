@@ -27,17 +27,6 @@
 			margin:0;
 			}
 
-			.mockElement {
-			width: 50px;
-			min-height: 1em;
-			position: absolute;
-			}
-
-		.editableArea>p{
-			margin: 0 0 0 0;
-			padding: 0 0 0 0;
-			}
-
 			#canvas .custom-selected.ui-resizable>.ui-resizable-handle{
 				pointer-events: auto;
 				background: rgba(0,0,0,0); /*the following stylesheet shows these again. If only html is saved (and the mockup not interactive thus, they are hidden)*/
@@ -48,13 +37,14 @@
 		<link href="styles/quickMockupInteractive.css" rel="stylesheet">
 
 		<!--elements -->
+		<!-- style has an ID so we can retrieve it for exporting html and css via a script reading the innerHTML of the style -->
 		<style id="elementStyles">
 			/*all*/
 			.newMockElement, .mockElement{
 				box-sizing: border-box;
 				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 				position: relative;
-				width:150px; /*if not specifies otherwise*/
+				background:rgba(255,255,255,0.8);
 			}
 			.newMockElement > div.editableArea, .mockElement > div.editableArea{
 				width: 100%;
@@ -69,6 +59,11 @@
 				color: #0093ff /*no visted state for mockup links*/
 			}
 
+
+			.editableArea>p{
+				margin: 0 0 0 0;
+				padding: 0 0 0 0;
+			}
 
 			/*buttons*/
 			.newMockElement.button, .mockElement.button{
@@ -111,6 +106,7 @@
 			.newMockElement.tabs, .mockElement.tabs{
 				background: rgba(0,0,0,0);
 				width:30em;
+				border-bottom:1px solid rgba(0,0,0,0.3);
 			}
 
 			.newMockElement.tabs>.editableArea, .mockElement.tabs>.editableArea{
@@ -140,14 +136,16 @@
 				border-top-right-radius: 3px;
 				margin: 0 0 -2px 0.3em;
 				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				background:white;
 			}
 
-			.mockElement.tabs>.editableArea>ul>li.item-highlighted{
+			.mockElement.tabs>.editableArea>ul>li.item-highlighted, .newMockElement.tabs>.editableArea>ul>li.item-highlighted{
 				background: #DDD;
 			}
 
 			.newMockElement.label .mockElement.label{
 				width:7em;
+				background-color: transparent;
 			}
 
 			.newMockElement.link, .mockElement.link{
@@ -159,6 +157,7 @@
 			/*headline*/
 			.newMockElement.headline>h1, .mockElement.headline>h1{
 				margin:0;
+				background-color: transparent;
 			}
 			/*paragraph*/
 			.newMockElement.paragraph>p{
@@ -185,13 +184,23 @@
 			.newMockElement.rect , .mockElement.rect{
 				border:2px solid #333;
 				width:200px;
-				height:200px;
+				height:50px;
+				background-color: transparent;
 			}
+
+			.newMockElement.grayrect , .mockElement.grayrect{
+				border:2px solid #333;
+				width:200px;
+				height:50px;
+				background-color: rgba(0,0,0,0.2);
+			}
+
 
 			/*optionlist*/
 
 			.newMockElement.optionRadiobutton , .mockElement.optionRadiobutton{
 				box-sizing: border-box;
+				background-color: transparent;
 			}
 
 			.newMockElement.optionRadiobutton .editableArea li, .mockElement.optionRadiobutton .editableArea li{
@@ -229,6 +238,7 @@
 			/*Checkboxes*/
 			.newMockElement.optionCheckbox , .mockElement.optionCheckbox{
 				box-sizing: border-box;
+				background-color: transparent;
 			}
 
 			.newMockElement.optionCheckbox .editableArea li, .mockElement.optionCheckbox .editableArea li{
@@ -249,14 +259,13 @@
 				content:"☑ ";
 			}
 
-
-
 			/*Dropdown*/
 			.dropdownList{
 				border:2px solid gray;
 				border-radius: 3px;
 				padding: 0px 0 0px 0.4em;
 				display: table;
+				background-color: white;
 			}
 
 			.dropdownList .editableArea{
@@ -293,39 +302,38 @@
 			align-items: center;
 			display: flex;
 			border:2px solid #333;
+			background-color: white;
 			}
 
 			.newMockElement.spinner::before, .mockElement.spinner::before{
-
-content: "▴";
-position: absolute;
-display: flex;
-justify-content: center;
-align-items: center;
-right: 0;
-top: 0;
-width: 1.5em;
-height: 50%;
-background: lightgray;
-font-size: 0.7em;
-
+				content: "▴";
+				position: absolute;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				right: 0;
+				top: 0;
+				width: 1.5em;
+				height: 50%;
+				background: lightgray;
+				font-size: 0.7em;
 			}
 
 			.newMockElement.spinner::after, .mockElement.spinner::after{
-			content:"▾";
-			position: absolute;
-			display: flex;
-			justify-content: center;
-align-items: center;
-			right: 0px;
-			bottom: 0px;
-			width: 1.5em;
-			height: 50%;
-			background: lightgray ;
-			font-size: 0.7em;
-			box-sizing: border-box;
-			padding-bottom: 0.2em;
-			border-top: 1px solid gray;
+				content:"▾";
+				position: absolute;
+				display: flex;
+				justify-content: center;
+	align-items: center;
+				right: 0px;
+				bottom: 0px;
+				width: 1.5em;
+				height: 50%;
+				background: lightgray ;
+				font-size: 0.7em;
+				box-sizing: border-box;
+				padding-bottom: 0.2em;
+				border-top: 1px solid gray;
 			}
 
 
@@ -338,8 +346,6 @@ align-items: center;
 
 			.newMockElement.slider:before,
 			.mockElement.slider::before{
-
-
 				content:" ";
 				height:0.5em;
 				width:0.5em;
@@ -663,20 +669,13 @@ align-items: center;
 						<span class="editableArea">OK</span>
 					</div>
 				</li>
-				<li title="simple OS window"><!-- Dialog Window -->
-					<div class="newMockElement dialogWindow" data-editable-content="myWindow" data-editable-mode="plain">
-						<div class="dialogWindow-bar" >
-							<span class="editableArea">Titel</span>
-							<span class="dialogWindow-closeButton">×</span>
-						</div>
-					</div>
-				</li>
 				<li title="tabs"><!-- Tabs -->
 					<div class="newMockElement tabs" data-editable-content="Tab1;*Tab2; Tab3" data-editable-mode="uielements">
 						<div class="editableArea" >
 							<ul>
 								<li>Tab1</li>
-								<li>Tab2</li>
+								<li class="item-highlighted">Tab2</li>
+								<li>Tab3</li>
 							</ul>
 
 						</div>
@@ -690,6 +689,46 @@ align-items: center;
 				<li title="a link">
 					<div class="newMockElement link" data-editable-content="link" data-editable-mode="plain">
 						<div class="editableArea">Link</div>
+				<li title="checkbox list">
+					<div class="newMockElement optionCheckbox" data-editable-content="option; *other option"  data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>option</li>
+								<li class="item-highlighted">other option</li>
+							</ul>
+
+						</div>
+					</div>
+				</li>
+				<li title="radio-button list">
+					<div class="newMockElement optionRadiobutton" data-editable-content="option; *other option"  data-editable-mode="uielements">
+						<div class="editableArea">
+							<ul>
+								<li>option</li>
+								<li class="item-highlighted">other option</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li title="dropdown element">
+					<div class="newMockElement dropdownList" data-editable-content="DropdownTitle"  data-editable-mode="plain">
+						<span class="editableArea">Dropdown Title</span><span class="mockelement-dropdown-arrow">▾</span>
+					</div>
+				</li>
+				<li title="spinner element">
+					<div class="newMockElement spinner" data-editable-content="10"  data-editable-mode="plain">
+						<span class="editableArea">10</span>
+					</div>
+				</li>
+				<li title="slider element">
+					<div class="newMockElement slider" >
+						<span> </span>
+					</div>
+				</li>
+				<li>
+					<div class="newMockElement loadingIndicator" >
+						<div class="bar"></div>
+						70%
 					</div>
 				</li>
 				<li>
@@ -708,7 +747,7 @@ Paragraph
 					</div>
 				</li>
 				<li title="markdown table">
-				<div class="newMockElement table" data-editable-content="
+					<div class="newMockElement table" data-editable-content="
 | h1    | h2      |      h3 |
 |:------|:-------:|--------:|
 | lorem | ipsum   | dolor   |
@@ -741,57 +780,21 @@ Paragraph
 						</tbody>
 						</table>
 					</div>
-				</div>
+				</li>
+				<li title="simple OS window"><!-- Dialog Window -->
+					<div class="newMockElement dialogWindow" data-editable-content="myWindow" data-editable-mode="plain">
+						<div class="dialogWindow-bar" >
+							<span class="editableArea">Titel</span>
+							<span class="dialogWindow-closeButton">×</span>
+						</div>
+					</div>
 				</li>
 				<li title="a rectangle">
 					<div class="newMockElement rect">
 					</div>
 				</li>
-				<li title="checkbox list">
-					<div class="newMockElement optionCheckbox" data-editable-content="bla; bla; *basd"  data-editable-mode="uielements">
-						<div class="editableArea">
-							<ul>
-								<li>option</li>
-								<li class="item-highlighted">other option</li>
-							</ul>
-
-						</div>
-					</div>
-				</li>
-				<li title="radio-button list">
-					<div class="newMockElement optionRadiobutton" data-editable-content="bla; bla; *basd"  data-editable-mode="uielements">
-						<div class="editableArea">
-							<ul>
-								<li>option</li>
-								<li class="item-highlighted">other option</li>
-							</ul>
-						</div>
-					</div>
-				</li>
-				<li title="dropdown element">
-					<div class="newMockElement dropdownList" data-editable-content="DropdownTitle"  data-editable-mode="plain">
-						<span class="editableArea">Dropdown Title</span><span class="mockelement-dropdown-arrow">▾</span>
-					</div>
-				</li>
-				<li title="inputbox element">
-					<div class="newMockElement inputbox" data-editable-content="Text here!"  data-editable-mode="plain">
-						<span class="editableArea">Text here!</span>
-					</div>
-				</li>
-				<li title="spinner element">
-					<div class="newMockElement spinner" data-editable-content="10"  data-editable-mode="plain">
-						<span class="editableArea">10</span>
-					</div>
-				</li>
-				<li title="slider element">
-					<div class="newMockElement slider" >
-						<span> </span>
-					</div>
-				</li>
-				<li>
-					<div class="newMockElement loadingIndicator" >
-						<div class="bar"></div>
-						70%
+				<li title="a gray rectangle">
+					<div class="newMockElement grayrect">
 					</div>
 				</li>
 				<li title="horizontal list">
@@ -800,7 +803,7 @@ Paragraph
 							<ul>
 								<li>Entry1</li>
 								<li>Entry2</li>
-								<li>Entry3</li>
+								<li class="item-highlighted">Entry3</li>
 							</ul>
 						</div>
 					</div>
@@ -811,7 +814,7 @@ Paragraph
 							<ul>
 								<li>Entry1</li>
 								<li>Entry2</li>
-								<li>Entry3</li>
+								<li class="item-highlighted">Entry3</li>
 							</ul>
 						</div>
 					</div>
@@ -822,7 +825,7 @@ Paragraph
 							<ul>
 								<li>Entry1</li>
 								<li>Entry2</li>
-								<li>Entry3</li>
+								<li class="item-highlighted">Entry3</li>
 							</ul>
 						</div>
 					</div>
@@ -833,12 +836,11 @@ Paragraph
 							<ul>
 								<li>Entry1</li>
 								<li>Entry2</li>
-								<li>Entry3</li>
+								<li class="item-highlighted">Entry3</li>
 							</ul>
 						</div>
 					</div>
 				</li>
-
 				<li title="horizontal boxes for toolbars">
 					<div class="newMockElement boxes-horizontal boxes-iconbar-horizontal" data-editable-content="☰;⌂;⚑; ⚙; ✂;✐;✔;✘;↶;↷;◂;▸; ▴;▾" data-editable-mode="uielements">
 						<div class="editableArea" >
@@ -927,8 +929,9 @@ Elements are grouped by dragging one element on/in another. Grouped elements mov
 		</div>
 
 	<div id="toolbar">
-		<button class="delete-element-button" title="deletes the currently selected element">✖ Delete Element</button>
-		<button class="undelete-element-button" title="undeletes most recently deleted element">↶</button>
+		<button class="delete-element-button" title="deletes the currently selected element (del)">✖ Delete Element</button>
+		<button class="undelete-element-button" title="undeletes most recently deleted element (Ctrl+Z)">↶</button>
+		<button class="duplicate-element-button" title="duplicates currently selected element (Ctrl+D)">⚭ Duplicate Element</button>
 		<button class="change-canvasize-button" title="change size of the area you place elements on">⇲ Change Canvas Size</button>
 	</div>
 
