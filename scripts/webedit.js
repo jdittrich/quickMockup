@@ -94,9 +94,9 @@ $(function(){
 
 	var duplicateElement=function(){ //TODO
 		var $canvas = $("body");
-		var $element2BDublicated = $canvas.find(".custom-selected");
+		var $element2BDuplicated = $canvas.find(".custom-selected");
 
-		var clonedElement = $element2BDublicated.clone(false); //clone all children too, don't clone events.
+		var clonedElement = $element2BDuplicated.clone(false); //clone all children too, don't clone events.
 
 
 		//some elements have id
@@ -116,13 +116,13 @@ $(function(){
 		});
 		reassignID($(clonedElement));
 
-		var originalElementPos = $element2BDublicated.position();
+		var originalElementPos = $element2BDuplicated.position();
 		clonedElement.css({
 			left:(originalElementPos.left+20)+"px",
 			top:(originalElementPos.top+20)+"px"
 		});
 		clonedElement.removeClass("custom-selected")
-		clonedElement.appendTo($element2BDublicated.parent());
+		clonedElement.appendTo($element2BDuplicated.parent());
 
 		clonedElement.find(".mockElement").each(function(index, element){
 			setupElement(element)
@@ -223,7 +223,7 @@ $(function(){
 		$("#toolbar .undelete-element-button").click(deleteElement.undelete);
 		Mousetrap.bind(['ctrl+z','command+z'],deleteElement.undelete);
 
-		$("#toolbar .dublicate-element-button").click(duplicateElement);
+		$("#toolbar .duplicate-element-button").click(duplicateElement);
 
 		$("#toolbar .change-canvasize-button").click(function(){
 			$("#changeCanvasSizeDialog").dialog("open");
