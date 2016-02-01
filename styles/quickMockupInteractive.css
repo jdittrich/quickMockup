@@ -5,7 +5,7 @@
 		}
 
 		.newMockElement{
-			width: 50px;
+			width: 10em;
 		}
 
 		.mockElement input.plaintextinput{ /*otherwise the input fields can be rather small*/
