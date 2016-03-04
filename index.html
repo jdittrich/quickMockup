@@ -13,6 +13,8 @@
 		<script src="scripts/showdown.js"></script>
 		<script src="scripts/showdownUIExtensions.js"></script>
 		<script src="scripts/mousetrap.js"></script>
+		<script src="scripts/filereader.js"></script>
+		<script src="scripts/FileSaver.js"></script>
 
 		<script src="scripts/jqUiEditMD2HTML.js"></script>
 
@@ -941,6 +943,10 @@ Elements are grouped by dragging one element on/in another. Grouped elements mov
 		</div>
 
 	<div id="toolbar">
+		<input type="file" id="loadFile" style="display:none">
+		<button id="loadFileButton">Open</button>
+		<button id="saveFile">Save</button>
+
 		<button class="delete-element-button" title="deletes the currently selected element (del)">✖ Delete Element</button>
 		<button class="undelete-element-button" title="undeletes most recently deleted element (Ctrl+Z)">↶</button>
 		<button class="duplicate-element-button" title="duplicates currently selected element (Ctrl+D)">⚭ Duplicate Element</button>

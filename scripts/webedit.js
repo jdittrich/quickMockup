@@ -1,4 +1,32 @@
 $(function(){
+	var setupElements = function(){
+
+		//setup canvas
+		makeDropableElement("#canvas");
+		//setup elements already on the page
+		$(".mockElement").each(function(index, element){
+			$(element).find(".ui-resizable-handle").remove();//otherwise we get them twice, they are saved with the file and created again when the element is initialized
+			setupElement(element);
+		});
+
+		//make new sidebar elements draggabe
+		$(".newMockElement").draggable({
+			distance: 4,
+			disabled:false,
+			appendTo: "body",
+			helper:"clone",
+			revert:"invalid",
+			zIndex:999
+		});
+	}
+
+	var setupElement = function(element){
+		makeMovableElement(element);
+		makeDropableElement(element);
+		$(element).editText();
+		makeSelectableElement(element,"#canvas");
+	};
+
 	var makeMovableElement = function(element){
 		//in case it already has the handle-elements (markup was duplicated or saved and now reloaded...)
 		$(element).
@@ -17,12 +45,6 @@ $(function(){
 		});
 	};
 
-	var setupElement = function(element){
-		makeMovableElement(element);
-		makeDropableElement(element);
-		$(element).editText();
-		makeSelectableElement(element,"#canvas");
-	};
 
 	var makeDropableElement= function(element){
 		$(element).droppable({
@@ -88,8 +110,6 @@ $(function(){
 		$element.mousedown(function(event){
 			if($(event.target).closest(elementSelector)[0] === $element[0]){ //either it is the same element that was clicked, or the element is the clicked element’s the first parent that is a mock element.
 
-			// ist das Element das nächste parent element vom geklickten element aus: select.
-			// wenn nicht... dann nix.
 				$canvas.find("." + selectedClassParam).removeClass(selectedClassParam);
 
 				$element.addClass(selectedClassParam); /*custom selected, since there is a jQuery UI selected, that might be used later*/
@@ -165,7 +185,7 @@ $(function(){
 	}());
 
 
-(function(){ //setup the gui
+(function(){//setup the gui
 
 		/*a dialog to change the canvas size. Maybe a bit over the top to use jqui for that.*/
 		$("#changeCanvasSizeDialog").dialog({
@@ -240,14 +260,23 @@ $(function(){
 		$("#toolbar .change-canvasize-button").click(function(){
 			$("#changeCanvasSizeDialog").dialog("open");
 		});
+
+		$('#saveFile').click(function(){
+			saveDocumentCode();
+		})
+
+		$('#loadFileButton').click(function(){
+			$("#loadFile").click();
+		})
+
 		//setup sidebar resize
 		$('#widgetCollectionWrap').resizable({
 			handles: 'e',
 			maxWidth:800,
 		})
 
-		//setup canvas
-		makeDropableElement("#canvas");
+
+
 
 		// prevent navigating away by accident
 		window.onbeforeunload = function(){
@@ -290,7 +319,7 @@ $(function(){
 					html:htmlString,
 					css:cssString,
 					js:""
-				}
+				};
 
 				var jsonstring = JSON.stringify(data).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 
@@ -303,6 +332,7 @@ $(function(){
 
 				$(form).appendTo("body")
 				$("#sendToCodepen").submit(); //$(form).submit fails in firefox
+
 		});
 
 
@@ -310,19 +340,67 @@ $(function(){
 	})();//setupgui end
 
 
-	//setup elements already on the page
-	$(".mockElement").each(function(index, element){
-		$(element).find(".ui-resizable-handle").remove();//otherwise we get them twice, they are saved with the file and created again when the element is initialized
-		setupElement(element);
-	});
+	//loader functions
+	var readStringToJquery =  function (string){
+		var $importedHTML =  $(string);//that feels wired. I suppose I should at least sanitize scripts.
 
-	//make new siebar elements draggabe
-	$(".newMockElement").draggable({
-		distance: 4,
-		disabled:false,
-		appendTo: "body",
-		helper:"clone",
-		revert:"invalid",
-		zIndex:999
-	});
+		var $sanitizedHTML = $importedHTML.remove("script"); //test if the scripts dont execute or if this is FUD
+
+		return $sanitizedHTML;
+	};
+
+	function appendJqueryToQuickmockupDom(jqueryObject){
+		//find container
+		var $canvasWrap=$("#canvasWrap");
+		var $widgetCollectionWrap=$("#widgetCollectionWrap");
+		//empty container;
+		$canvasWrap.empty();
+		$widgetCollectionWrap.empty();
+		//fill container
+		$canvasWrap.append(jqueryObject.find("#canvasWrap").children());
+		$widgetCollectionWrap.append(jqueryObject.find("#widgetCollectionWrap").children());
+		//TODO: shall we do the init here as well? We could call the init functon from here
+		return undefined;
+		}
+
+
+		$("#loadFile").fileReaderJS({//fixme: can we make this class as elementgetter?
+			accept: 'text/*',
+			readAsDefault: 'Text',
+			on:{
+				load:function(e,file){
+					appendJqueryToQuickmockupDom(readStringToJquery(e.target.result)); //ugly!!!
+					setupElements();
+				}
+			}
+		});
+
+		function saveDocumentCode(){
+			var padNumberWith0es = function(number, padding){
+				//number : the number you want to pad with 0es
+				//padding: the length of the output string, 5 is 00000 and 00125 etc.
+
+				if(padding+1< (""+number).length){ //make padding at last as long as the number, so nothing is cut off.
+					padding = (""+number).length;
+				}
+
+				var zeroes = Array(padding+1).join("0");
+				var paddedNumber = (zeroes + number).slice(-(zeroes.length));
+
+				return paddedNumber;
+			};
+
+			var currentDate = new Date();
+
+			var year  = currentDate.getFullYear();
+			var month = currentDate.getMonth() + 1;
+			var day   = currentDate.getDate();
+
+			var documentstring = document.documentElement.outerHTML;
+			var blob = new Blob([documentstring], {type: "text/plain;charset=utf-8"});
+				saveAs(blob, ""+year+month+day+"mockup.html");
+		}
+
+	//START
+	setupElements();
 });
