@@ -133,7 +133,7 @@ $(function(){
 			if(oldId.length >0){ //if it actually had an Id
 				var newIdNr = parseInt(Math.random()*100000000000000);
 				$element.attr("id", "mockElement_"+newIdNr);
-				$element.find("#editableArea"+oldIdNr).attr("id", "editableArea_"+newIdNr);
+				$element.find("#editableArea_"+oldIdNr).attr("id", "editableArea_"+newIdNr);
 			}
 		};
 
