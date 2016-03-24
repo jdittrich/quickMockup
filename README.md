@@ -1,5 +1,7 @@
 #QuickMockup
 
+[![Join the chat at https://gitter.im/jdittrich/quickMockup](https://badges.gitter.im/jdittrich/quickMockup.svg)](https://gitter.im/jdittrich/quickMockup?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 QuickMockup is a simple tool for creating simple mockups of interfaces and websites. It is HTML based and javascript-enhanced.
 
 **[Try the demo](https://jdittrich.github.io/quickMockup/)**
