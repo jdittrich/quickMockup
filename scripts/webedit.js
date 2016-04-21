@@ -121,6 +121,9 @@ $(function(){
 	var duplicateElement=function(){
 		var $canvas = $("body");
 		var $element2BDuplicated = $canvas.find(".custom-selected");
+		if($element2BDuplicated.length === 0){
+			return; //no element selected, duplication of selected element is futile.
+		}
 
 		var clonedElement = $element2BDuplicated.clone(false); //clone all children too, don't clone events.
 
