@@ -194,7 +194,7 @@
 
 			/*just a rectangle*/
 			.newMockElement.rect , .mockElement.rect{
-				border:2px solid #333;
+				border:2px solid rgba(0,0,0,0.8);
 				width:200px;
 				height:50px;
 				background-color: transparent;
@@ -204,7 +204,14 @@
 				border:2px solid #333;
 				width:200px;
 				height:50px;
-				background-color: rgba(0,0,0,0.2);
+				background-color: lightgrey;
+			}
+
+			.newMockElement.whiterect , .mockElement.whiterect{
+				border:2px solid rgba(150,150,150,0.05);
+				width:200px;
+				height:50px;
+				background-color: white;
 			}
 
 
@@ -250,7 +257,6 @@
 			/*Checkboxes*/
 			.newMockElement.optionCheckbox , .mockElement.optionCheckbox{
 				box-sizing: border-box;
-				background-color: transparent;
 			}
 
 			.newMockElement.optionCheckbox .editableArea li, .mockElement.optionCheckbox .editableArea li{
@@ -403,12 +409,12 @@
 
 			/*entries vertical*/
 			.newMockElement.entries-horizontal, .mockElement.entries-horizontal{
-				background: rgba(0,0,0,0);
+				background: white;
 				width:15em;
 			}
 
 			.newMockElement.entries-horizontal .editableArea, .mockElement.entries-horizontal .editableArea{
-				background: rgba(0,0,0,0);
+				background: white;
 				box-sizing: border-box;
 				width:100%;
 				height: 100%;
@@ -442,12 +448,12 @@
 
 			/*entries horizontal*/
 			.newMockElement.entries-vertical, .mockElement.entries-vertical{
-				background: rgba(0,0,0,0);
+				background: white;
 				width:30em;
 			}
 
 			.newMockElement.entries-vertical .editableArea, .mockElement.entries-vertical .editableArea{
-				background: rgba(0,0,0,0);
+				background:white;
 				box-sizing: border-box;
 				width:100%;
 				height: 100%;
@@ -579,6 +585,7 @@
 				flex: 1 1 0%;
 				margin: 0.1em;
 				padding: 0.1em 0.1em 0.2em;
+				background: white;
 			}
 			.newMockElement.boxes-iconbar-horizontal ul>li{
 			min-width: 1em;
@@ -594,6 +601,22 @@
 			text-align: center;
 			height:5em;
 		}
+
+		/*actual image*/
+		.newMockElement.actualimage, .mockElement.actualimage{
+			height:5em;
+		}
+
+		.mockElement.actualimage>p{
+			background: lightgray;
+			color:gray;
+		}
+
+		.mockElement.actualimage img{
+			width:100%;
+			height:100%;
+		}
+
 
 		/*meta: note*/
 		.newMockElement.note, .mockElement.note{
@@ -869,6 +892,14 @@ Paragraph
 					<div class="newMockElement imageplaceholder" data-editable-content="Image" data-editable-mode="plain">
 						<div class="editableArea" >
 						Image
+						</div>
+					</div>
+				</li>
+
+				<li title="add markdown link to image">
+					<div class="newMockElement actualimage" data-editable-content="![]()<!-- add URL to image in the round brackets -->" data-editable-mode="markdown">
+						<div class="editableArea">
+						Image (double click to add markdown link to image)
 						</div>
 					</div>
 				</li>
