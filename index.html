@@ -207,6 +207,22 @@
 				background-color: lightgrey;
 			}
 
+			.newMockElement.invisiblerect, .mockElement.invisiblerect {
+				width:200px;
+				height:50px;
+				background-color: transparent;
+				margin:2px;
+			}
+
+			.mockElement.invisiblerect > .desc {
+				display:none;
+			}
+
+			.newMockElement.invisiblerect, .mockElement.invisiblerect:hover, .mockElement.invisiblerect.custom-selected {
+				border:2px solid lightgrey;
+				margin:0;
+			}
+
 			.newMockElement.whiterect , .mockElement.whiterect{
 				border:2px solid rgba(150,150,150,0.05);
 				width:200px;
@@ -832,6 +848,11 @@ Paragraph
 				</li>
 				<li title="a gray rectangle">
 					<div class="newMockElement grayrect">
+					</div>
+				</li>
+				<li title="an invisible rectangle">
+					<div class="newMockElement invisiblerect">
+						<div class="desc">Invisible Rect<br>Use for grouping</div>
 					</div>
 				</li>
 				<li title="horizontal list">
