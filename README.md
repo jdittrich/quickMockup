@@ -4,6 +4,8 @@
 
 QuickMockup is a simple tool for creating simple mockups of interfaces and websites. It is HTML based and javascript-enhanced.
 
+I currently don't develop this. If you need something more powerful, have a look at https://github.com/jgraph/draw.io
+
 **[Try the demo](https://jdittrich.github.io/quickMockup/)**
 
 --------------------
