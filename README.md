@@ -1,4 +1,4 @@
-#QuickMockup
+# QuickMockup
 
 [![Join the chat at https://gitter.im/jdittrich/quickMockup](https://badges.gitter.im/jdittrich/quickMockup.svg)](https://gitter.im/jdittrich/quickMockup?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
