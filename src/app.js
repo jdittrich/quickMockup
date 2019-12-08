@@ -29,6 +29,9 @@ function QuickMockupApp(canvasContainerId, width, height) {
             const duplicate = selectedFigure.clone()
             duplicate.translate(10, 10)
             this.canvas.add(duplicate)
+            if ( selectedFigure.getComposite() !== null ) {
+                selectedFigure.getComposite().assignFigure(duplicate)
+            }
             this.canvas.setCurrentSelection(duplicate)
         }
     }
