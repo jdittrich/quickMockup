@@ -6,14 +6,14 @@ QuickMockup is a simple tool for creating simple mockups of interfaces and websi
 
 **NOTE**
 This is currently under development and infrastructural work in order to put forward a version of quickMockup. titled quickMockup v2,
-that takes advantage of more recent and stable technologies and standards. quickMockup v1 will as well try to address and provide
+that takes advantage of more recent and stable technologies and standards. quickMockup v2 will as well try to address and provide
 solutions to the elementary issues with the previous version, such as zooming, user-composed elements, save to more formats and many
 other featurs.
 
 **[Live demo](http://quickmocup-v2-demo.herokuapp.com/)**
 
 If you are looking for the older version, it is pointed at by [v0.x](https://github.com/jdittrich/quickMockup/tree/v0.x) branch.
-And the old live demo is under the (same old) url https://jdittrich.github.io/quickMockup-v1
+And the old live demo is under the (same old) url https://jdittrich.github.io/quickMockup
 
 --------------------
 
