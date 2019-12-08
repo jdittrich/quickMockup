@@ -10,7 +10,7 @@ that takes advantage of more recent and stable technologies and standards. quick
 solutions to the elementary issues with the previous version, such as zooming, user-composed elements, save to more formats and many
 other featurs.
 
-**[Live demo](https://jdittrich.github.io/quickMockup-v1/)**
+**[Live demo](http://quickmocup-v1-demo.herokuapp.com/)**
 
 If you are looking for the older version, it is pointed at by [v0.x](https://github.com/jdittrich/quickMockup/tree/v0.x) branch.
 And the old live demo is under the (same old) url https://jdittrich.github.io/quickMockup-v1
