@@ -15,13 +15,13 @@ const Container = draw2d.shape.composite.StrongComposite.extend({
         this.unassignFigure(figure)
     },
 
-    onCatch: function (droppedFigure, x, y, shiftKey, ctrlKey) {
-        if (droppedFigure.getComposite()) {
+    onCatch: function (figure) {
+        if (figure.getComposite()) {
             return
         }
 
-        if (this.getBoundingBox().contains(droppedFigure.getBoundingBox())) {
-            this.assignFigure(droppedFigure)
+        if (this.getBoundingBox().contains(figure.getBoundingBox())) {
+            this.assignFigure(figure)
         }
     },
 
