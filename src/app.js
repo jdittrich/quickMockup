@@ -14,9 +14,17 @@ function QuickMockupApp(canvasContainerId, width, height) {
         }
     }))
 
-    this.createNewElementFromDrop = (canvas, { key, event }) => {
+    this.createNewElementFromDrop = (canvas, { key, event, ui}) => {
+
+        // instead of using the cursor position we get the position of the upper left corner 
+        // of the dragged helper to make the new element appear without "jumping"
+        // at the same position
+        // caveat: depends on jQueryUI
+        let helperPos = ui.helper[0].getBoundingClientRect();
+        
         const element = new elements[key]({})
-        canvas.add(element.figure, canvas.fromDocumentToCanvasCoordinate(event.clientX, event.clientY))
+
+        canvas.add(element.figure, canvas.fromDocumentToCanvasCoordinate(helperPos.left, helperPos.top))
         element.figure.toFront()
         canvas.setCurrentSelection(element.figure)
     }
