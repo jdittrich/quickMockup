@@ -7,22 +7,14 @@ function QuickMockupApp(canvasContainerId, width, height) {
     this.canvas.setScrollArea('#'+canvasContainerId)
 
     this.canvas.installEditPolicy(new ToFrontBoundingBoxSelectionPolicy())
-    this.canvas.installEditPolicy(new draw2d.policy.canvas.CanvasPolicy({
-        onMouseDrag: $.throttle(200, (canvas, x, y) => {
-        }),
-        onMouseUp: function(canvas, x, y) {
-
-        }
-    }))
 
     this.createNewElementFromDrop = (canvas, { key, event, ui}) => {
-
-        // instead of using the cursor position we get the position of the upper left corner 
+        // instead of using the cursor position we get the position of the upper left corner
         // of the dragged helper to make the new element appear without "jumping"
         // at the same position
         // caveat: depends on jQueryUI
         let helperPos = ui.helper[0].getBoundingClientRect();
-        
+
         const element = new elements[key]({})
 
         canvas.add(element.figure, canvas.fromDocumentToCanvasCoordinate(helperPos.left, helperPos.top))
