@@ -1,11 +1,6 @@
 let enteredContainers = []
 
 const Container = draw2d.shape.composite.StrongComposite.extend({
-    init: function(...args) {
-        this._super(...args)
-        this.isPotentialContainer = false
-    },
-
     assignFigure: function (figure) {
         this.assignedFigures.add(figure)
         figure.setComposite(this)
@@ -24,20 +19,24 @@ const Container = draw2d.shape.composite.StrongComposite.extend({
         if (!figure.isInDragDrop) {
             return
         }
-        // when dragged element moves entirely inside the container,
-        // we want to mark the container as potential container for that
-        // figure
+
         if (this.getBoundingBox().contains(figure.getBoundingBox())) {
             this.setGlow(true)
+            // we add push into this array so that we unset glow
+            // later when drag ends inside the contianer
             enteredContainers.push(this)
         } else {
-            // otherwise we mark this container back as no potential container
             this.setGlow(false)
         }
     },
 
     onDragEnter: function(figure) {
-        // start tracking the movement of dragged element
+        // only start tracking the movement of dragged element when
+        // drag enters this container
+
+        // remove old throttle handler as we will create a new one here
+        // which won't be recognized as the old one inside the Figuer.on()
+        // which would lead to having two+ handlers after each enter
         this.throttledMoveHandler && figure.off(this.throttledMoveHandler)
         this.throttledMoveHandler = $.throttle(100, (canvas, { figure }) => {
             this.onEnteredFigureMove(figure)
