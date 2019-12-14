@@ -100,10 +100,16 @@ const Container = draw2d.shape.composite.StrongComposite.extend({
 
     setGlow: function (glow) {
         if (glow && !this.originalStroke) {
-            this.originalStroke = this.getStroke()
-            this.setStroke( this.originalStroke + 1)
+            const stroke = this.getStroke()
+            const color = this.getColor()
+            this.originalStroke = { color, stroke }
+
+            this.setStroke(stroke + 1)
+            this.setColor('#6666cc')
         } else if (!glow && this.originalStroke) {
-            this.setStroke(this.originalStroke)
+            const { stroke, color } = this.originalStroke
+            this.setStroke(stroke)
+            this.setColor(color)
             delete this.originalStroke
         }
     }
