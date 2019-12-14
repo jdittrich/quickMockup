@@ -36,6 +36,7 @@ Library  | Creator |License | Origin
 ------------- | -------- | ----- | -------------
 jQuery | Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors | [Released under the MIT license](http://jquery.org/license) | http://jquery.com/
 jQueryUI | Copyright jQuery Foundation and other contributors | Released under the MIT license | http://jqueryui.com
+jQuery.ba-throttle-debounce | Copyright (c) 2010 "Cowboy" Ben Alman | Dual licensed under the MIT and GPL licenses. | http://benalman.com/projects/jquery-throttle-debounce-plugin/
 draw2d | [Andreas Herz (freegroup)](https://github.com/freegroup) | Released under the MIT license | https://github.com/freegroup/draw2d
 
 

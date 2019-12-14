@@ -1,27 +1,20 @@
 import elements from './elements/index.js'
+import ToFrontBoundingBoxSelectionPolicy from './policy/canvas/ToFrontBoundingBoxSelectionPolicy.js'
 
 function QuickMockupApp(canvasContainerId, width, height) {
     this.elements = elements
     this.canvas = new draw2d.Canvas( canvasContainerId, width, height )
     this.canvas.setScrollArea('#'+canvasContainerId)
 
-    this.canvas.installEditPolicy(new draw2d.policy.canvas.CanvasPolicy({
-        onMouseDown: function(canvas) {
-            const selectedFigure = canvas.getPrimarySelection()
-            if (selectedFigure && selectedFigure !== canvas.getFigures().last()) {
-                canvas.getPrimarySelection().toFront()
-            }
-        }
-    }))
+    this.canvas.installEditPolicy(new ToFrontBoundingBoxSelectionPolicy())
 
     this.createNewElementFromDrop = (canvas, { key, event, ui}) => {
-
-        // instead of using the cursor position we get the position of the upper left corner 
+        // instead of using the cursor position we get the position of the upper left corner
         // of the dragged helper to make the new element appear without "jumping"
         // at the same position
         // caveat: depends on jQueryUI
         let helperPos = ui.helper[0].getBoundingClientRect();
-        
+
         const element = new elements[key]({})
 
         canvas.add(element.figure, canvas.fromDocumentToCanvasCoordinate(helperPos.left, helperPos.top))
