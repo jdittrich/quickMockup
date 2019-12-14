@@ -1,4 +1,20 @@
-let enteredContainers = []
+const setAsPotentialContainer = function (container, figure) {
+    container.setGlow(true)
+    unsetAsPotentialContainer(container.getComposite(), figure)
+}
+
+const unsetAsPotentialContainer = function (container, figure) {
+    if (!container) {
+        return
+    }
+
+    if (container instanceof Container) {
+        container.setGlow(false)
+        container.throttledMoveHandler && figure.off(container.throttledMoveHandler)
+    }
+
+    unsetAsPotentialContainer(container.getComposite(), figure)
+}
 
 const Container = draw2d.shape.composite.StrongComposite.extend({
     assignFigure: function (figure) {
@@ -21,12 +37,7 @@ const Container = draw2d.shape.composite.StrongComposite.extend({
         }
 
         if (this.getBoundingBox().contains(figure.getBoundingBox())) {
-            this.setGlow(true)
-            // we add push into this array so that we unset glow
-            // later when drag ends inside the contianer
-            enteredContainers.push(this)
-        } else {
-            this.setGlow(false)
+            setAsPotentialContainer(this, figure)
         }
     },
 
@@ -38,32 +49,21 @@ const Container = draw2d.shape.composite.StrongComposite.extend({
         // which won't be recognized as the old one inside the Figuer.on()
         // which would lead to having two+ handlers after each enter
         this.throttledMoveHandler && figure.off(this.throttledMoveHandler)
-        this.throttledMoveHandler = $.throttle(100, (canvas, { figure }) => {
+        this.throttledMoveHandler = $.throttle(10, (canvas, { figure }) => {
             this.onEnteredFigureMove(figure)
         })
         figure.on('move', this.throttledMoveHandler)
     },
 
     onDragLeave: function(figure) {
-        this.throttledMoveHandler && figure.off(this.throttledMoveHandler)
-
-        // when a dragged figure enters another container that is inside the
-        // boundaries of this container, then a drag leave and drag enter
-        // events will be fired on this container consequently.
-        // To avoid flickering glow triggering on this container, do not
-        // turn off glow if dragged figure is still inside the boundaries
-        // of this container
         if (!this.getBoundingBox().contains(figure.getBoundingBox())) {
-            this.setGlow(false)
+            unsetAsPotentialContainer(this, figure)
         }
         this.unassignFigure(figure)
     },
 
     onCatch: function (figure) {
-        this.setGlow(false)
-        this.throttledMoveHandler && figure.off(this.throttledMoveHandler)
-        enteredContainers.forEach(c => c.setGlow(false))
-        enteredContainers = []
+        unsetAsPotentialContainer(this, figure)
 
         if (figure.getComposite()) {
             return
