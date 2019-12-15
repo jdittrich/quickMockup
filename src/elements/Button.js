@@ -8,6 +8,7 @@ function Button({
     width = 150,
     height = 30,
     stroke = 2,
+    fontSize,
     ...props
 } = {}) {
     this.name = 'quickMockup.BUtton'
@@ -15,7 +16,8 @@ function Button({
     this.text = new draw2d.shape.basic.Label({
         stroke: 0,
         text,
-        fontColor
+        fontColor,
+        fontSize
     })
     this.text.on('dblclick', () => { textEditor.start(this.text) })
 
