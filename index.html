@@ -48,10 +48,11 @@
     <div id="canvas" class="Canvas"></div>
 
     <script type="module">
-        import init from "./lib/init.js"
+        import init from './lib/init.js'
+        import defaultSettings from './settings.default.js'
 
         document.addEventListener( 'DOMContentLoaded', function () {
-            init('toolbar', 'canvas')
+            init('toolbar', 'canvas', defaultSettings)
         })
     </script>
 </body>

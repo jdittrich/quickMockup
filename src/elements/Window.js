@@ -6,6 +6,7 @@ function Window({
     title = 'Window',
     titleBarColor = '#333',
     titleBarBgColor = '#999',
+    fontSize,
     ...props
 } = {}) {
     this.name = 'quickMockup.Window'
@@ -15,7 +16,8 @@ function Window({
         text: title,
         fontColor: titleBarColor,
         stroke: 0,
-        height: 24
+        height: 24,
+        fontSize
     })
     this.titleBarLabel.on('dblclick', () => { titleLabelEditor.start(this.titleBarLabel) })
 
