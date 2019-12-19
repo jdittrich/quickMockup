@@ -17,20 +17,26 @@
         }
 
         .Toolbar {
+            align-items: center;
             border-right: 1px solid grey;
-            display: inline-block;
+            display: inline-flex;
+            flex-direction: column;
             width: 256px;
             height: 100vh;
         }
 
         .Toolbar__element {
-            background: #CCC;
-            border: 1px solid grey;
+            display: block;
+            height: 40px;
             margin: 16px;
-            padding: 16px;
             text-align: center;
             user-select: none;
-            width: 160px;
+            width: 180px;
+        }
+
+        .Toolbar__element > svg {
+            width: 100%;
+            height: 100%;
         }
 
         .Canvas {
