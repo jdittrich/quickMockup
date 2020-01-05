@@ -46,6 +46,7 @@ class ElementOptionsHost {
         container.style.top = '0px'
         container.style.left = '0px'
         container.style.boxShadow = 'rgba(100, 100, 100, .3) 0px 1px 2px'
+        container.style.padding = '8px'
 
         document.body.appendChild(container)
 
@@ -59,7 +60,7 @@ class ElementOptionsHost {
 
         this._currentElement = element
 
-        this.containerHTML.innerHTML = ''
+        this.containerHTML.firstChild && this.containerHTML.firstChild.remove()
         this.containerHTML.appendChild(element.optionsHTML)
         this.adjustContainerPosition()
         this.containerHTML.style.display = 'block'
@@ -70,7 +71,7 @@ class ElementOptionsHost {
             return
         }
 
-        this.containerHTML.innerHTML = ''
+        this.containerHTML.firstChild && this.containerHTML.firstChild.remove()
         this._currentElement = null
         this.containerHTML.style.display = 'none'
     }

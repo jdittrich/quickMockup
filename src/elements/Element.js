@@ -16,6 +16,14 @@ class Element {
         return this._figure
     }
 
+    /**
+     * Returns html node to be displayed inside
+     * options toolbox. Its responsibility is to provide
+     * html elements to allow the user to change configurable
+     * aspects of the element, such as a button text.
+     *
+     * @return {HTMLElement}
+     */
     get optionsHTML() {
         return document.createElement('div')
     }
