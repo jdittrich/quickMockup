@@ -62,7 +62,7 @@ class Canvas {
 
             if (key.length > 1) {
                 const splits = key.split('+')
-                modifiers = splits.slice(0, splits.length - 2)
+                modifiers = splits.slice(0, splits.length - 1)
                 char = splits[splits.length - 1]
 
                 if (char === '') {
@@ -77,7 +77,7 @@ class Canvas {
                     return
                 }
 
-                for (i in modifiers) {
+                for (let i in modifiers) {
                     const modifier = modifiers[i]
 
                     if (!keydownEvent[modifier]) {
