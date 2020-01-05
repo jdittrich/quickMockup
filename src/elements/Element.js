@@ -15,6 +15,10 @@ class Element {
     get figure() {
         return this._figure
     }
+
+    get optionsHTML() {
+        return document.createElement('div')
+    }
 }
 
 export default Element

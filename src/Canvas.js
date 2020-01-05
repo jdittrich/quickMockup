@@ -1,10 +1,12 @@
 import ToFrontBoundingBoxSelectionPolicy from './policy/canvas/ToFrontBoundingBoxSelectionPolicy.js'
+import ElementOptionsHost from './policy/figure/ElementOptionsHost.js'
 
 class Canvas {
-    constructor (canvasContainerId, settings) {
+    constructor(canvasContainerId, settings) {
         this._canvasContainerId = canvasContainerId
         this._settings = settings
         this._elements = []
+        this._elementOptionsHost = new ElementOptionsHost()
     }
 
     get settings() {
@@ -25,6 +27,10 @@ class Canvas {
 
     get canvasContainer() {
         return document.getElementById(this._canvasContainerId)
+    }
+
+    get elementOptionsHost() {
+        return this._elementOptionsHost
     }
 
     init() {
@@ -96,7 +102,8 @@ class Canvas {
         this.canvas.getCommandStack().execute(
             new draw2d.command.CommandAdd(this.canvas, element.figure, this.canvas.fromDocumentToCanvasCoordinate(x, y))
         )
-        element.figure.setCanvas(this.canvas)
+
+        element.figure.installEditPolicy(this.elementOptionsHost.getPolicyForElement(element))
 
         if (select) {
             this.canvas.setCurrentSelection(element.figure)
