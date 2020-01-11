@@ -3,63 +3,169 @@
 <head>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript" src="lib/jquery.js"></script>
-    <script type="text/javascript" src="lib/jquery-ui.js"></script>
-    <script type="text/javascript" src="lib/jquery.browser.js"></script>
-    <script type="text/javascript" src="lib/jquery.ba-throttle-debounce.js"></script>
-    <script type="text/javascript" src="lib/draw2d.js"></script>
+    <!-- <script type="text/javascript" src="/lib/paper-full.min.js"></script> -->
+    <script src="https://unpkg.com/konva@4.0.0/konva.min.js"></script>
     <style>
-        body {
-            background-color: #eee;
+        body{
             margin: 0;
             padding: 0;
-            overflow: hidden;
         }
 
-        .Toolbar {
-            align-items: center;
-            border-right: 1px solid grey;
-            display: inline-flex;
-            flex-direction: column;
-            width: 256px;
+        #canvas {
+            width: 100vw;
             height: 100vh;
-        }
-
-        .Toolbar__element {
-            display: block;
-            height: 40px;
-            margin: 16px;
-            text-align: center;
-            user-select: none;
-            width: 180px;
-        }
-
-        .Toolbar__element > svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .Canvas {
-            display: inline-block;
-            position: absolute;
-            left: 256px;
-            width: calc(100vw - 256px);
-            height: 100vh;
-            overflow: scroll;
         }
     </style>
 </head>
 <body>
-    <div id="toolbar" class="Toolbar"></div>
-    <div id="canvas" class="Canvas"></div>
+    <div id="canvasContainer"></div>
+    <script type="text/javascript">
+        window.onload = function() {
+            const Tools = Object.freeze({
+                createContainer: 'createContainer',
+                move: 'move',
+                createWidget: 'createWidget'
+            })
 
-    <script type="module">
-        import init from './lib/init.js'
-        import defaultSettings from './settings.default.js'
+            const stage = new Konva.Stage({
+                container: 'canvasContainer',
+                width: window.innerWidth,
+                height: window.innerHeight
+            })
 
-        document.addEventListener( 'DOMContentLoaded', function () {
-            init('toolbar', 'canvas', defaultSettings)
-        })
+            window.onresize = function() {
+                stage.size({
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                })
+            }
+
+            const creationLayer = new Konva.Layer({
+                listening: false
+            })
+
+            const elementsLayer = new Konva.Layer({
+                listening: false
+            })
+
+            stage.add(creationLayer)
+            stage.add(elementsLayer)
+
+            let newContainer = null
+            let startPoint = null
+            let newTool = null
+            stage.on('mousedown', ({evt: {x, y}}) => {
+                startPoint = [x, y]
+                switch(tool) {
+                case Tools.createContainer:
+                    console.log('start creating container')
+                    break;
+                case Tools.createWidget:
+                    console.log('start creating widget')
+                    break;
+                }
+            })
+            stage.on('mousemove', event => {
+                if (!startPoint) {
+                    return
+                }
+
+                switch(tool) {
+                case Tools.createContainer:
+                    if (newContainer) {
+                        newContainer.destroy()
+                    }
+                    const endPoint = [event.evt.x, event.evt.y]
+
+                    const x = Math.min(startPoint[0], endPoint[0])
+                    const y = Math.min(startPoint[1], endPoint[1])
+                    const width = Math.abs(startPoint[0] - endPoint[0])
+                    const height = Math.abs(startPoint[1] - endPoint[1])
+                    newContainer = new Konva.Rect({
+                        x, y, width, height,
+                        strokeWidth: 1,
+                        stroke: 'black',
+                        fill: 'rgba(255,240,240,.5)',
+                        draggable: true
+                    })
+
+                    creationLayer.add(newContainer)
+                    creationLayer.draw()
+                    break;
+                case Tools.createWidget:
+                    console.log('reposition widget')
+                    break;
+                }
+            })
+            stage.on('mouseup', event => {
+                switch(tool) {
+                case Tools.createContainer:
+                    console.log('finished creating a container')
+                    newContainer.moveTo(elementsLayer)
+                    registerRaftListeners(newContainer)
+                    getNodesInside(newContainer).forEach(n => n.moveToTop())
+                    stage.draw()
+                    break;
+                case Tools.createWidget:
+                    console.log('finished creating a widget')
+                    break;
+                }
+                newContainer = null
+                startPoint = null
+            })
+
+            const registerRaftListeners = container => {
+                let nodesInside = null
+                container.on('dragstart', event => {
+                    nodesInside = getNodesInside(container)
+                })
+                container.on('dragmove', ({evt: { movementX: x, movementY: y }}) => {
+                    if (nodesInside) {
+                        nodesInside.forEach(n => n.move({ x, y }))
+                    }
+                })
+                container.on('dragend', event => {
+                    nodesInside = null
+                    getNodesInside(container).forEach(n => n.moveToTop())
+                    elementsLayer.draw()
+                })
+            }
+
+            getNodesInside = container => {
+                const boundingBox = container.getClientRect()
+                const {x: fromX, y: fromY} = boundingBox
+                const toX = fromX + boundingBox.width
+                const toY = fromY + boundingBox.height
+
+                return elementsLayer.getChildren(node => {
+                    const nodeBoundingBox = node.getClientRect()
+                    return container !== node
+                        && fromX <= nodeBoundingBox.x
+                        && fromY <= nodeBoundingBox.y
+                        && toX >= nodeBoundingBox.x + nodeBoundingBox.width
+                        && toY >= nodeBoundingBox.y + nodeBoundingBox.height
+                })
+            }
+
+            let tool
+            document.addEventListener('keydown', event => {
+                if (event.key === 'c') {
+                    tool = Tools.createContainer
+                    elementsLayer.listening(false)
+                    elementsLayer.draw()
+                } else if (event.key === 'm') {
+                    tool = Tools.move
+                    elementsLayer.listening(true)
+                    elementsLayer.draw()
+                } else if (event.key === 'w') {
+                    tool = Tools.createWidget
+                    elementsLayer.listening(false)
+                    elementsLayer.draw()
+                }
+
+                console.log(tool)
+            })
+        }
     </script>
 </body>
 </html>
