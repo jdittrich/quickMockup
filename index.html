@@ -3,63 +3,111 @@
 <head>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript" src="lib/jquery.js"></script>
-    <script type="text/javascript" src="lib/jquery-ui.js"></script>
-    <script type="text/javascript" src="lib/jquery.browser.js"></script>
-    <script type="text/javascript" src="lib/jquery.ba-throttle-debounce.js"></script>
-    <script type="text/javascript" src="lib/draw2d.js"></script>
+    <script type="text/javascript" src="/lib/paper-full.min.js"></script>
     <style>
-        body {
-            background-color: #eee;
+        body{
             margin: 0;
             padding: 0;
-            overflow: hidden;
         }
 
-        .Toolbar {
-            align-items: center;
-            border-right: 1px solid grey;
-            display: inline-flex;
-            flex-direction: column;
-            width: 256px;
+        #canvas {
+            width: 100vw;
             height: 100vh;
-        }
-
-        .Toolbar__element {
-            display: block;
-            height: 40px;
-            margin: 16px;
-            text-align: center;
-            user-select: none;
-            width: 180px;
-        }
-
-        .Toolbar__element > svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .Canvas {
-            display: inline-block;
-            position: absolute;
-            left: 256px;
-            width: calc(100vw - 256px);
-            height: 100vh;
-            overflow: scroll;
         }
     </style>
 </head>
 <body>
-    <div id="toolbar" class="Toolbar"></div>
-    <div id="canvas" class="Canvas"></div>
+    <canvas id="canvas" class="Canvas" resize></canvas>
+    <script type="text/javascript">
+        window.onload = function() {
+            paper.setup('canvas')
 
-    <script type="module">
-        import init from './lib/init.js'
-        import defaultSettings from './settings.default.js'
+            const getItemsInsideContainer = item => {
+                return paper.project.getItems({
+                    inside: item.bounds,
+                    match: m => m !== item && !(m instanceof paper.Layer) && !(m instanceof paper.Group)
+                })
+            }
 
-        document.addEventListener( 'DOMContentLoaded', function () {
-            init('toolbar', 'canvas', defaultSettings)
-        })
+            const drawContainerTool = new paper.Tool()
+            let newContainer = null
+            drawContainerTool.onMouseDrag = event => {
+                newContainer && newContainer.remove()
+
+                newContainer = new paper.Shape.Rectangle(event.downPoint, event.point)
+                newContainer.strokeColor = 'black'
+            }
+            drawContainerTool.onMouseUp = event => {
+                if (!newContainer) {
+                    return
+                }
+
+                newContainer.fillColor = 'rgba(255,255,255,.9)'
+                newContainer.bringToFront()
+                getItemsInsideContainer(newContainer).forEach(i => i.bringToFront())
+                newContainer = null
+            }
+
+            const moveTool = new paper.Tool()
+            let selectedItem = null
+            let itemsInside = []
+            moveTool.onMouseDown = event => {
+                if (!event.item) {
+                    return
+                }
+
+                selectedItem = event.item
+                selectedItem.selected = true
+
+                itemsInside = getItemsInsideContainer(selectedItem)
+            }
+            moveTool.onMouseDrag = event => {
+                if (selectedItem && event.delta) {
+                    selectedItem.translate(event.delta)
+                    itemsInside.forEach(i => i.translate(event.delta))
+                }
+            }
+            moveTool.onMouseUp = event => {
+                if ( selectedItem ) {
+                    selectedItem.bringToFront()
+                    getItemsInsideContainer(selectedItem).forEach(i => i.bringToFront())
+                    selectedItem.selected = false
+                    selectedItem = null
+                    itemsInside = []
+                }
+
+            }
+
+            const widgetTool = new paper.Tool()
+            let newWidget = null
+            widgetTool.onMouseDown = event => {
+                newWidget = new paper.Shape.Rectangle(event.point.subtract([60, 16]), [120, 32])
+                newWidget.fillColor = 'grey'
+                newWidget.strokeColor = 'black'
+                newWidget.strokeWidth = 2
+
+                const widgetLabel = new paper.PointText(event.point)
+                widgetLabel.content = 'Widget'
+                widgetLabel.fillColor = 'white'
+                widgetLabel.fontSize = '12px'
+            }
+            widgetTool.onMouseDrag = event => {
+                newWidget.position = event.point
+            }
+            widgetTool.onMouseUp = event => {
+                newWidget = null
+            }
+
+            document.addEventListener('keydown', event => {
+                if (event.key === 'm') {
+                    moveTool.activate()
+                } else if (event.key === 'c') {
+                    drawContainerTool.activate()
+                } else if (event.key === 'w') {
+                    widgetTool.activate()
+                }
+            })
+        }
     </script>
 </body>
 </html>
