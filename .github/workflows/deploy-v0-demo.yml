@@ -1,0 +1,16 @@
+name: Deploy Demo
+
+on:
+  push:
+    branches: [v0.x]
+
+jobs:
+  deply:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Deploy to Heroku
+      env:
+        HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
+      run: git push -f https://heroku:$HEROKU_API_TOKEN@git.heroku.com/quickmocup-v1-demo.git origin/master:v0.x
