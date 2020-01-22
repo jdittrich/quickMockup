@@ -272,6 +272,12 @@ $(function(){
 			$("#loadFile").click();
 		})
 
+		$('#newFile').click(function(){
+			if(window.confirm(window.onbeforeunload())) {
+				var $canvas=$("#canvas").empty();
+			}
+		});
+
 		//setup sidebar resize
 		$('#widgetCollectionWrap').resizable({
 			handles: 'e',
