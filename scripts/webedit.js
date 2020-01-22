@@ -273,7 +273,7 @@ $(function(){
 		})
 
 		$('#newFile').click(function(){
-			if(window.confirm(window.onbeforeunload())) {
+			if(window.confirm('are you sure you want to start new sketch? unsaved changes to current sketch will be lost, unless you save them first.')) {
 				var $canvas=$("#canvas").empty();
 			}
 		});
