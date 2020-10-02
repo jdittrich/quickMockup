@@ -23,19 +23,19 @@ The tool is meant to allow to *quickly* create mockups of interfaces in order to
 
 It is *not* meant for pixel perfect mockups nor for complex interface mockups involving several screens and hundereds of elements.
 
-The target group for now are interaction/interface *designers* or design-aware *developers* who take part in open source projects and need to communicate their ideas. An mockup is worth a thousand words in this case.
+The target group for now are interaction/interface *designers* or design-aware *developers* who take part in open source projects and need to communicate their ideas. A mockup is worth a thousand words in this case.
 
 ## License
 
-MIT License; Used Libraries may have other licenses – see below
+MIT License; Libraries used may have other licenses – see below
 
 ## Used Libraries
 
-### quickMocup v1
+### quickMockup v1
 Library  | Creator |License | Origin
 ------------- | -------- | ----- | -------------
-jQuery | Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors | [Released under the MIT license](http://jquery.org/license) | http://jquery.com/
-jQueryUI | Copyright jQuery Foundation and other contributors | Released under the MIT license | http://jqueryui.com
+jQuery | Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors | [Released under the MIT license](https://jquery.org/license) | https://jquery.com/
+jQueryUI | Copyright jQuery Foundation and other contributors | Released under the MIT license | https://jqueryui.com
 jQuery.ba-throttle-debounce | Copyright (c) 2010 "Cowboy" Ben Alman | Dual licensed under the MIT and GPL licenses. | http://benalman.com/projects/jquery-throttle-debounce-plugin/
 draw2d | [Andreas Herz (freegroup)](https://github.com/freegroup) | Released under the MIT license | https://github.com/freegroup/draw2d
 
@@ -43,7 +43,7 @@ draw2d | [Andreas Herz (freegroup)](https://github.com/freegroup) | Released und
 ### Old version
 Library  | Creator |License | Origin
 ------------- | -------- | ----- | -------------
-jQuery | Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors | [Released under the MIT license](http://jquery.org/license) | http://jquery.com/
-jQueryUI | Copyright jQuery Foundation and other contributors | Released under the MIT license | http://jqueryui.com
-Mousetrap | Craig Campbell in 2012-2015 | [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) | https://craig.is/killing/mice
+jQuery | Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors | [Released under the MIT license](https://jquery.org/license) | https://jquery.com/
+jQueryUI | Copyright jQuery Foundation and other contributors | Released under the MIT license | https://jqueryui.com
+Mousetrap | Craig Campbell in 2012-2015 | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) | https://craig.is/killing/mice
 Showdown | Showdown Copyright (c) 2007, John Fraser | [Showdown Copyright](https://github.com/showdownjs/showdown/blob/master/license.txt) | https://github.com/showdownjs/showdown
